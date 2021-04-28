@@ -12,7 +12,6 @@
 //argv является указателем на массив указателей.
 int main(int argc, char **argv) {
 
-    int a;
     if (argc >= 2 && strcmp(argv[1], "help") == 0) {
         printf("Для вывода списка дисков и разделов, подключенных к операционной системе, задайте аргумент: list \n"
                "Для выполненя операций над файловой системой, задайте аргумент: shell и укажите диск");
@@ -41,7 +40,8 @@ int listMode() {
     regex_t matcher_partitions;
 
 
-    regcomp(&matcher_drives, DRIVE_PATTERN, REG_EXTENDED); //https://www.opennet.ru/cgi-bin/opennet/man.cgi?topic=regcomp&category=3
+    regcomp(&matcher_drives, DRIVE_PATTERN,
+            REG_EXTENDED); //https://www.opennet.ru/cgi-bin/opennet/man.cgi?topic=regcomp&category=3
     block_devices_dir = opendir(SYS_BLOCK_DIR);
     if (!block_devices_dir) {
         return -1;
@@ -76,7 +76,7 @@ int shellMode(char *filename) {
         printf("Диск не существует или не поддерживает файловую систему HFS+");
         return -1;
     }
-    printf("HFS+ filesystem detected.\n");
+    printf("Данный диск имеет файловую систему HFS+\n");
     int exitFlag = 0;
     char *inputString = malloc(1024);
     while (!exitFlag) {
