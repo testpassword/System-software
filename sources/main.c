@@ -1,5 +1,6 @@
-#include "main.h"
-#include "hfsplus_utils.h"
+#include "../headers/main.h"
+#include "../headers/hfsplus_utils.h"
+
 
 
 #include <stdio.h>
@@ -10,28 +11,24 @@
 
 //argc содержит количество аргументов в командной строке.
 //argv является указателем на массив указателей.
-int main(int argc, char **argv) {
+int main(int argc, char * argv[]) {
 
-    if (argc >= 2 && strcmp(argv[1], "help") == 0) {
-        printf("Для вывода списка дисков и разделов, подключенных к операционной системе, задайте аргумент: list \n"
-               "Для выполненя операций над файловой системой, задайте аргумент: shell и укажите диск");
-//        printf("To run program in list mode use 'list' key. To run it in shell mode use 'shell' key and specify drive or deviceDescriptor.");
+    if (argc == 2 && strcmp(argv[1], "partitions") == 0) {
+        partitionsMode();
         return 0;
     }
-    if (argc >= 2 && strcmp(argv[1], "list") == 0) {
-        listMode();
-        return 0;
-    }
-    if (argc >= 3 && strcmp(argv[1], "shell") == 0) {
+    if (argc == 3 && strcmp(argv[1], "shell") == 0) {
         shellMode(argv[2]);
         return 0;
     }
-    printf("Некоректный ввод. Воспользуйтесь аргументом help для просмотра возможности программы");
+    printf("Некоректный ввод. Для запуска прокрамма выберите один из представленных аргументов: \n"
+           "1) Для вывода списка дисков и разделов, подключенных к операционной системе, задайте аргумент: partitions \n"
+           "2) Для выполненя операций над файловой системой, задайте аргумент: shell и укажите раздел");
     return 0;
 }
 
 //Вывод списка дисков и разделов подключенных к ОС.
-int listMode() {
+int partitionsMode() {
     DIR *block_devices_dir;
     DIR *partitions_dir;
     struct dirent *block_device_entry;
@@ -76,7 +73,7 @@ int shellMode(char *filename) {
         printf("Диск не существует или не поддерживает файловую систему HFS+");
         return -1;
     }
-    printf("Данный диск имеет файловую систему HFS+\n");
+    printf("Диск поддерживает HFS+\n");
     int exitFlag = 0;
     char *inputString = malloc(1024);
     while (!exitFlag) {

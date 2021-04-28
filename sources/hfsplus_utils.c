@@ -1,4 +1,4 @@
-#include "hfsplus_utils.h"
+#include "../headers/hfsplus_utils.h"
 
 #include <stdlib.h>
 #include <fcntl.h>

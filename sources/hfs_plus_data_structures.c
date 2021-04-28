@@ -1,4 +1,4 @@
-#include "hfs_plus_data_structures.h"
+#include "../headers/hfs_plus_data_structures.h"
 
 void reverseHFSUniStr255(HFSUniStr255 *s) {
     s->length = bswap_16(s->length);
@@ -26,7 +26,8 @@ void reverseHFSPlusForkData(HFSPlusForkData *s) {
     s->clumpSize = bswap_32(s->clumpSize);
     s->totalBlocks = bswap_32(s->totalBlocks);
     for (int i = 0; i < 8; i++) {
-        reverseHFSPlusExtentDescriptor(((HFSPlusExtentDescriptor *) &s->extents) + i * sizeof(HFSPlusExtentDescriptor));
+        s->extents[i].blockCount = bswap_32(s->extents[i].blockCount);
+        s->extents[i].startBlock = bswap_32(s->extents[i].startBlock);
     }
 }
 
