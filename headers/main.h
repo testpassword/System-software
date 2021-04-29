@@ -2,4 +2,4 @@
 
 int partitionsMode();
 
-int shellMode(char *name);
+int shellMode(char *filename);

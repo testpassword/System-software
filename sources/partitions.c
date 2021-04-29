@@ -28,10 +28,12 @@ int partitionsMode()
                 DIR *sys_block_subdir = opendir(disk_path);
                 struct dirent *partition;
 
+                //выводим подкаталоги
                 if (sys_block_subdir)
                 {
                     while ((partition = readdir(sys_block_subdir)) != NULL)
                     {
+                        //http://all-ht.ru/inf/prog/c/func/memcmp.html
                         if (!memcmp(partition->d_name, disk->d_name, strlen(disk->d_name)))
                             printf("- /dev/%s\n", partition->d_name);
                     }

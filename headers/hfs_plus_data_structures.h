@@ -5,15 +5,13 @@
 #define HFS_PLUS_SIGNATURE 0x482b
 #define HFS_PLUS_VERSION 4
 
-//main data types for HFS+
+//типы данных для HFS+
 typedef unsigned char UInt8;
 typedef signed char SInt8;
 typedef unsigned short UInt16;
 typedef signed short SInt16;
 typedef unsigned int UInt32;
-typedef signed int SInt32;
 typedef unsigned long UInt64;
-typedef signed long SInt64;
 typedef UInt16 UniChar;
 
 //HFS+ data structures
@@ -24,7 +22,7 @@ struct HFSUniStr255 {
 typedef struct HFSUniStr255 HFSUniStr255;
 typedef const HFSUniStr255 *ConstHFSUniStr255Param;
 
-void reverseHFSUniStr255(HFSUniStr255 *s);
+//void reverseHFSUniStr255(HFSUniStr255 *s);
 
 struct HFSPlusBSDInfo {
     UInt32 ownerID;
@@ -49,7 +47,6 @@ struct HFSPlusExtentDescriptor {
 typedef struct HFSPlusExtentDescriptor HFSPlusExtentDescriptor;
 typedef HFSPlusExtentDescriptor HFSPlusExtentRecord[8];
 
-void reverseHFSPlusExtentDescriptor(HFSPlusExtentDescriptor *s);
 
 struct HFSPlusForkData {
     UInt64 logicalSize;
@@ -119,12 +116,6 @@ enum BTreeType {
     typeStartup = 4
 };
 
-enum {
-    kBTLeafNode = -1,
-    kBTIndexNode = 0,
-    kBTHeaderNode = 1,
-    kBTMapNode = 2
-};
 
 void reverseBTNodeDescriptor(BTNodeDescriptor *s);
 
@@ -170,7 +161,7 @@ struct HFSPlusCatalogKey {
 }__attribute__((packed));
 typedef struct HFSPlusCatalogKey HFSPlusCatalogKey;
 
-void reverseHFSPlusCatalogKey(HFSPlusCatalogKey *s);
+
 
 enum {
     kHFSPlusFolderRecord = 0x0001,

@@ -9,9 +9,9 @@
 
 #define HEADER_OFFSET 1024
 
-FileSystem *openFileSystem(char *name) {
+FileSystem *openFileSystem(char *filename) {
     HFSPlusVolumeHeader *header = malloc(sizeof(struct HFSPlusVolumeHeader));
-    int fd = open(name, O_RDONLY, 00666);
+    int fd = open(filename, O_RDONLY, 00666);
     pread(fd, header, sizeof(struct HFSPlusVolumeHeader), HEADER_OFFSET);
     reverseHFSPlusVolumeHeader(header);
     if (header->signature == HFS_PLUS_SIGNATURE && header->version == HFS_PLUS_VERSION) {
@@ -356,13 +356,13 @@ char *ls(FileSystem *fileSystem, char *path) {
         info = findFileByPath(fileSystem, fileSystem->pwd, path);
     }
     if (info->id == 0) {
-        char *message = "No such file or directory\n";
+        char *message = "Файл или дириктория не найдены\n";
         output = malloc(strlen(output) + strlen(message) + 1);
         sprintf(output, "%s", message);
         free(info);
         return output;
     } else if (info->type != kHFSPlusFolderRecord) {
-        char *message = "Not a directory\n";
+        char *message = "Это не дириктория\n";
         output = malloc(strlen(output) + strlen(message) + 1);
         sprintf(output, "%s", message);
         free(info);
@@ -427,11 +427,11 @@ char *cd(FileSystem *fileSystem, char *path) {
     }
     NodeInfo *info = findFileByPath(fileSystem, fileSystem->pwd, path);
     if (info->id == 0) {
-        char *message = "No such file or directory\n";
+        char *message = "Файл или дириктория не найдены\n";
         output = realloc(output, strlen(output) + strlen(message) + 1);
         sprintf(output, "%s", message);
     } else if (info->type != kHFSPlusFolderRecord) {
-        char *message = "Not a directory\n";
+        char *message = "Это не дериктория\n";
         output = realloc(output, strlen(output) + strlen(message) + 1);
         sprintf(output, "%s", message);
     } else if (info->id != kHFSRootParentID) {
@@ -445,22 +445,22 @@ char *cp(FileSystem *fileSystem, char *path, char *outPath) {
     char *output = malloc(1);
     output[0] = '\0';
     if (path == NULL || outPath == NULL) {
-        char *message = "Empty path\n";
+        char *message = "Не указан путь\n";
         output = realloc(output, strlen(output) + strlen(message) + 1);
         sprintf(output, "%s", message);
         return output;
     }
     NodeInfo *info = findFileByPath(fileSystem, fileSystem->pwd, path);
     if (info->id == 0) {
-        char *message = "No such file or directory\n";
+        char *message = "Файл или дириктория не найдены\n";
         output = realloc(output, strlen(output) + strlen(message) + 1);
         sprintf(output, "%s", message);
     } else if (copy(fileSystem, info, outPath) == 0) {
-        char *message = "Copied successfully\n";
+        char *message = "Копрование прошло успешно\n";
         output = realloc(output, strlen(output) + strlen(message) + 1);
         sprintf(output, "%s", message);
     } else {
-        char *message = "Error\n";
+        char *message = "Ошибка\n";
         output = realloc(output, strlen(output) + strlen(message) + 1);
         sprintf(output, "%s", message);
     }

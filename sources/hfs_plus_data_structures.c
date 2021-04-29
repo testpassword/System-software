@@ -1,11 +1,6 @@
 #include "../headers/hfs_plus_data_structures.h"
 
-void reverseHFSUniStr255(HFSUniStr255 *s) {
-    s->length = bswap_16(s->length);
-    for (int i = 0; i < s->length; i++) {
-        s->unicode[i] = bswap_16(s->unicode[i]);
-    }
-}
+
 
 void reverseHFSPlusBSDInfo(HFSPlusBSDInfo *s) {
     s->ownerID = bswap_32(s->ownerID);
@@ -16,10 +11,7 @@ void reverseHFSPlusBSDInfo(HFSPlusBSDInfo *s) {
     s->special.rawDevice = bswap_32(s->special.rawDevice);
 }
 
-void reverseHFSPlusExtentDescriptor(HFSPlusExtentDescriptor *s) {
-    s->blockCount = bswap_32(s->blockCount);
-    s->startBlock = bswap_32(s->startBlock);
-}
+
 
 void reverseHFSPlusForkData(HFSPlusForkData *s) {
     s->logicalSize = bswap_64(s->logicalSize);
@@ -83,11 +75,7 @@ void reverseBTHeaderRec(BTHeaderRec *s) {
     s->attributes = bswap_32(s->attributes);
 }
 
-void reverseHFSPlusCatalogKey(HFSPlusCatalogKey *s) {
-    s->keyLength = bswap_16(s->keyLength);
-    s->parentID = bswap_32(s->parentID);
-    reverseHFSUniStr255(&s->nodeName);
-}
+
 
 void reverseHFSPlusCatalogFolder(HFSPlusCatalogFolder *s) {
     s->recordType = bswap_16(s->recordType);
@@ -115,5 +103,4 @@ void reverseHFSPlusCatalogFile(HFSPlusCatalogFile *s) {
     s->textEncoding = bswap_32(s->textEncoding);
     reverseHFSPlusBSDInfo(&s->permissions);
     reverseHFSPlusForkData(&s->dataFork);
-    //reverseHFSPlusForkData(&s->resourceFork);
 }
