@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "hfsplus_utils.h": "c",
+        "hfs_plus_data_structures.h": "c",
+        "switch.h": "c"
+    }
+}

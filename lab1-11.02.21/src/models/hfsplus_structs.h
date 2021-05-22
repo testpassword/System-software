@@ -1,11 +1,9 @@
 #pragma once
-
 #include <byteswap.h>
-
 #define HFS_PLUS_SIGNATURE 0x482b
 #define HFS_PLUS_VERSION 4
+#define HEADER_OFFSET 1024
 
-//типы данных для HFS+
 typedef unsigned char UInt8;
 typedef signed char SInt8;
 typedef unsigned short UInt16;
@@ -14,15 +12,12 @@ typedef unsigned int UInt32;
 typedef unsigned long UInt64;
 typedef UInt16 UniChar;
 
-//HFS+ data structures
 struct HFSUniStr255 {
     UInt16 length;
     UniChar unicode[255];
 }__attribute__((packed));
 typedef struct HFSUniStr255 HFSUniStr255;
 typedef const HFSUniStr255 *ConstHFSUniStr255Param;
-
-//void reverseHFSUniStr255(HFSUniStr255 *s);
 
 struct HFSPlusBSDInfo {
     UInt32 ownerID;
@@ -38,15 +33,12 @@ struct HFSPlusBSDInfo {
 }__attribute__((packed));
 typedef struct HFSPlusBSDInfo HFSPlusBSDInfo;
 
-void reverseHFSPlusBSDInfo(HFSPlusBSDInfo *s);
-
 struct HFSPlusExtentDescriptor {
     UInt32 startBlock;
     UInt32 blockCount;
 }__attribute__((packed));
 typedef struct HFSPlusExtentDescriptor HFSPlusExtentDescriptor;
 typedef HFSPlusExtentDescriptor HFSPlusExtentRecord[8];
-
 
 struct HFSPlusForkData {
     UInt64 logicalSize;
@@ -57,37 +49,28 @@ struct HFSPlusForkData {
 typedef struct HFSPlusForkData HFSPlusForkData;
 typedef UInt32 HFSCatalogNodeID;
 
-void reverseHFSPlusForkData(HFSPlusForkData *s);
-
 struct HFSPlusVolumeHeader {
     UInt16 signature;
     UInt16 version;
     UInt32 attributes;
     UInt32 lastMountedVersion;
     UInt32 journalInfoBlock;
-
     UInt32 createDate;
     UInt32 modifyDate;
     UInt32 backupDate;
     UInt32 checkedDate;
-
     UInt32 fileCount;
     UInt32 folderCount;
-
     UInt32 blockSize;
     UInt32 totalBlocks;
     UInt32 freeBlocks;
-
     UInt32 nextAllocation;
     UInt32 rsrcClumpSize;
     UInt32 dataClumpSize;
     HFSCatalogNodeID nextCatalogID;
-
     UInt32 writeCount;
     UInt64 encodingsBitmap;
-
     UInt32 finderInfo[8];
-
     HFSPlusForkData allocationFile;
     HFSPlusForkData extentsFile;
     HFSPlusForkData catalogFile;
@@ -95,8 +78,6 @@ struct HFSPlusVolumeHeader {
     HFSPlusForkData startupFile;
 }__attribute__((packed));
 typedef struct HFSPlusVolumeHeader HFSPlusVolumeHeader;
-
-void reverseHFSPlusVolumeHeader(HFSPlusVolumeHeader *s);
 
 struct BTNodeDescriptor {
     UInt32 fLink;
@@ -116,9 +97,6 @@ enum BTreeType {
     typeStartup = 4
 };
 
-
-void reverseBTNodeDescriptor(BTNodeDescriptor *s);
-
 struct BTHeaderRec {
     UInt16 treeDepth;
     UInt32 rootNode;
@@ -137,8 +115,6 @@ struct BTHeaderRec {
     UInt32 reserved3[16];
 }__attribute__((packed));
 typedef struct BTHeaderRec BTHeaderRec;
-
-void reverseBTHeaderRec(BTHeaderRec *s);
 
 enum {
     kHFSRootParentID = 1,
@@ -160,8 +136,6 @@ struct HFSPlusCatalogKey {
     HFSUniStr255 nodeName;
 }__attribute__((packed));
 typedef struct HFSPlusCatalogKey HFSPlusCatalogKey;
-
-
 
 enum {
     kHFSPlusFolderRecord = 0x0001,
@@ -188,8 +162,6 @@ struct HFSPlusCatalogFolder {
 }__attribute__((packed));
 typedef struct HFSPlusCatalogFolder HFSPlusCatalogFolder;
 
-void reverseHFSPlusCatalogFolder(HFSPlusCatalogFolder *s);
-
 struct HFSPlusCatalogFile {
     SInt16 recordType;
     UInt16 flags;
@@ -205,10 +177,7 @@ struct HFSPlusCatalogFile {
     UInt32 finderInfo[4];
     UInt32 textEncoding;
     UInt32 reserved2;
-
     HFSPlusForkData dataFork;
     HFSPlusForkData resourceFork;
 }__attribute__((packed));
 typedef struct HFSPlusCatalogFile HFSPlusCatalogFile;
-
-void reverseHFSPlusCatalogFile(HFSPlusCatalogFile *s);

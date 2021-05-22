@@ -1,6 +1,4 @@
-#include "../headers/hfs_plus_data_structures.h"
-
-
+#include "./headers/hfsplus_utils.h"
 
 void reverseHFSPlusBSDInfo(HFSPlusBSDInfo *s) {
     s->ownerID = bswap_32(s->ownerID);
@@ -10,8 +8,6 @@ void reverseHFSPlusBSDInfo(HFSPlusBSDInfo *s) {
     s->special.linkCount = bswap_32(s->special.linkCount);
     s->special.rawDevice = bswap_32(s->special.rawDevice);
 }
-
-
 
 void reverseHFSPlusForkData(HFSPlusForkData *s) {
     s->logicalSize = bswap_64(s->logicalSize);
@@ -44,9 +40,7 @@ void reverseHFSPlusVolumeHeader(HFSPlusVolumeHeader *s) {
     s->nextCatalogID = bswap_32(s->nextCatalogID);
     s->writeCount = bswap_32(s->writeCount);
     s->encodingsBitmap = bswap_64(s->encodingsBitmap);
-    for (int i = 0; i < 8; i++) {
-        s->finderInfo[i] = bswap_32(s->finderInfo[i]);
-    }
+    for (int i = 0; i < 8; i++) s->finderInfo[i] = bswap_32(s->finderInfo[i]);
     reverseHFSPlusForkData(&s->allocationFile);
     reverseHFSPlusForkData(&s->attributesFile);
     reverseHFSPlusForkData(&s->extentsFile);
@@ -74,8 +68,6 @@ void reverseBTHeaderRec(BTHeaderRec *s) {
     s->clumpSize = bswap_32(s->clumpSize);
     s->attributes = bswap_32(s->attributes);
 }
-
-
 
 void reverseHFSPlusCatalogFolder(HFSPlusCatalogFolder *s) {
     s->recordType = bswap_16(s->recordType);
