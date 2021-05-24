@@ -314,8 +314,8 @@ int copy(FileSystem* fs, NodeInfo* info, char* path) {
 }
 
 char* get_partitions_str() {
-    const char partitions_path[] = "/sys/block";
-    DIR* sys_block_dir = opendir(partitions_path);
+    const char PARTITIONS_PATH[] = "/sys/block";
+    DIR* sys_block_dir = opendir(PARTITIONS_PATH);
     struct dirent* disk;
     char* all_partitions = malloc(255 * 255);
     void concat_device(char str[]) {
@@ -329,12 +329,12 @@ char* get_partitions_str() {
             if (strcmp(d_name, ".") &&  strcmp(d_name, "..") && !strstr(d_name, "ram") && !strstr(d_name, "loop")) {
                 concat_device(d_name);
                 char disk_path[FILENAME_MAX] = { 0 };
-                strcat(strcat(disk_path, partitions_path), d_name);
+                strcat(strcat(disk_path, PARTITIONS_PATH), d_name);
                 DIR* sys_block_subdir = opendir(disk_path);
                 struct dirent* partition;
                 if (sys_block_subdir)
                     while ((partition = readdir(sys_block_subdir)) != NULL)
-                        if (!memcmp(partition->d_name, d_name, strlen(d_name))) concat_device(partition->d_name);
+                        if (!memcmp(partition->d_name, disk->d_name, strlen(disk->d_name))) concat_device(partition->d_name);
                 closedir(sys_block_subdir);
             }
         }
@@ -356,14 +356,14 @@ char* ls(FileSystem* fs, char* path) {
     catalog_iteration(fs, fs->catalog->header->firstLeafNode, input, &nodeInfoArray, &ls_callback);
     list = malloc(263 * nodeInfoArray.size);
     list[0] = '\0';
-    char result[263]; //255 - maximal length of name, 7 - "FOLDER\t", 1 - "\0"
+    char result[263];
     for (int i = 0; i < nodeInfoArray.size; i++) {
         if (nodeInfoArray.data[i].type == kHFSPlusFolderRecord) {
-            sprintf(result, "FOLDER\t%s\n", nodeInfoArray.data[i].name);
+            sprintf(result, "\t%s::d\n", nodeInfoArray.data[i].name);
             strcat(list, result);
         }
         if (nodeInfoArray.data[i].type == kHFSPlusFileRecord) {
-            sprintf(result, "FILE\t%s\n", nodeInfoArray.data[i].name);
+            sprintf(result, "\t%s::f\n", nodeInfoArray.data[i].name);
             strcat(list, result);
         }
     }

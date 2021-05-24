@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
         FileSystem* fs = open_fs(argv[2]);
         if (fs == NULL) println("unsupported filesystem in: %s. Supported fs is HFS+ only");
         else {
-            char* input_str = malloc(FILENAME_MAX * 3 + 2); // команда + 2 аргумента + 2 пробела
+            char* input_str = malloc(FILENAME_MAX * 4 + 2); // команда + 2 аргумента + запас на пробелы
             for(;;) {
                 printf("> ");
                 fgets(input_str, 1024, stdin);
@@ -40,11 +40,11 @@ int main(int argc, char *argv[]) {
                         println(cp(fs, path, cmd_arg));
                         break;
                     defaults
-                        println("Supported commands:\npwd;     ls <path>;      cd <path>;      cp <src> <dest>;     exit");
+                        println("supported commands:\npwd : show path in mounted fs;\nls <path> : show items in path\ncd <path> : moves into mounted fs\ncp <src> <dest> : copy file or folder inside mounted fs or from mounted os to external (only absolute path) supports\nexit : terminate session");
                         break;
                 } switchs_end;
             }
         }
-    } else println("error, mode don't specified, start with --help");
+    } else println("error, mode don't specified, start with -H");
     return 0;
 }

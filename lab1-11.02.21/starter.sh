@@ -1,4 +1,7 @@
-# ЗАПУСКАТЬ С ПРАВАМИ СУПЕРПОЛЬЗОВАТЕЛЯ!
+# И СКРИПТ, И ПРОГРАММУ ЗАПУСКАТЬ С ПРАВАМИ СУПЕРПОЛЬЗОВАТЕЛЯ!
+# ПУТЬ МОНТИРОВАНИЯ ДОЛЖЕН СОСТОЯТЬ ИЗ ОДНОГО КУСОЧКА (пр. `/mnt` , но не `/mnt/something`)
+# ФАЙЛЫ И ДИРЕКТОРИИ ДОЛЖНЫ СОДЕРЖАТЬ ТОЛЬКО АНГЛИЙСКИЙ БУКВЫ И ЦИФРЫ
+# В КАЧЕСТВЕ АРГУМЕНТА РЕЖИМУ `--explorer` ПЕРЕДАВАТЬ НЕ ПУТЬ К ТОЧКЕ МОНТИРОВАНИЯ, А К РАЗДЕЛУ НА ДИСКЕ ИЛИ ФАЙЛУ (пр. `./app -E /dev/sdb2` , а не `./app -E /mnt`)
 
 MOUNT_POINT = "/mnt/pocket"
 
@@ -7,8 +10,10 @@ function execute_info { ./build/app -I }
 function execute_explorer { ./build/app -E build/pocket.fs }
 
 function build {
-    rm build/app
-    gcc -o build/app src/shell.c src/fs_utils.c src/hfsplus_utils.c
+    app_exe = "build/app"
+    rm $app_exe
+    gcc -o $app_exe src/shell.c src/fs_utils.c src/hfsplus_utils.c
+    chmod +x $app_exe
 }
 
 function create_hfs_to_file {
@@ -18,14 +23,14 @@ function create_hfs_to_file {
 }
 
 function mount_fs_from_file {
-    mkdir /mnt/pocket
+    mkdir /mnt
     arg = "build/pocket.fs ${MOUNT_POINT}"
     umount $arg
     mount_fs $arg
 }
 
 function mount_fs_from_disk {
-    mkdir /mnt/pocket
+    mkdir /mnt
     arg = "/dev/sdb2 ${MOUNT_POINT}"
     umount $arg
     mount_fs $arg
