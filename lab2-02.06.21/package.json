@@ -1,0 +1,21 @@
+{
+  "name": "System-software-2",
+  "version": "1.0.0",
+  "description": "Node.js wrapper for C HFS+ file explorer",
+  "main": "shell.js",
+  "scripts": {
+    "start": "echo toor | sudo -S node shell.js",
+    "info": "echo toor | sudo -S node shell.js -I",
+    "explorer": "echo toor | sudo -S node shell.js -E /dev/sdb1",
+    "build": "echo toor | sudo -S cmake-js -O ./build -d ./native compile"
+  },
+  "author": "pugalol",
+  "license": "ISC",
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "cmake-js": "^6.1.0",
+    "node-addon-api": "^3.2.1",
+    "node-gyp": "^8.1.0",
+    "readline-sync": "^1.4.10"
+  }
+}
