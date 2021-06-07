@@ -23,20 +23,18 @@ function create_hfs_to_file {
 }
 
 function mount_fs_from_file {
-    mkdir /mnt
     arg = "build/pocket.fs ${MOUNT_POINT}"
     umount $arg
     mount_fs $arg
 }
 
 function mount_fs_from_disk {
-    mkdir /mnt
     arg = "/dev/sdb2 ${MOUNT_POINT}"
     umount $arg
     mount_fs $arg
 }
 
-function mount_fs { mount -t hfsplus -o rw,remount -force ${1} }
+function mount_fs { mount ${1} /mnt }
 
 modes=("I" "E" "B" "C" "MF" "MD")
 case ${1} in
