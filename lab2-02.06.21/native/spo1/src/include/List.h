@@ -1,5 +1,4 @@
 #pragma once
-
 #include <HFSCatalog.h>
 
 typedef struct PathListNode {

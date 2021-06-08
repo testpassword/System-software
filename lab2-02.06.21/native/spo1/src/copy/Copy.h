@@ -1,9 +1,5 @@
 #pragma once
-
 #include <stdint.h>
-//#include <Flexcommander.h>
-//#include <HFSPlusBTree.h>
-//#include <HFSCatalog.h>
 
 typedef struct BTHeaderRec BTHeaderRec;
 typedef struct HFSPlusCatalogFile HFSPlusCatalogFile;

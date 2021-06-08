@@ -3,7 +3,7 @@
 #include <wchar.h>
 #include <stdlib.h>
 #include "HFSCatalog.h"
-#include <Flexcommander.h>
+#include <Commander.h>
 #include <List.h>
 
 void PrintCatalogKey(HFSPlusCatalogKey key) {
@@ -65,53 +65,40 @@ void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType, 
     switch (recordType) {
         case FolderRecord:
             pathListNode.token = "d";
-//            printf("d");
             break;
         default:
             pathListNode.token = "-";
-//            printf("-");
             break;
     }
-
     PathListAdd(&fs->output, pathListNode);
-
     switch (ownerRights) {
         case 0:
             pathListNode.token = "---";
-//            printf("---");
             break;
         case S_IXUSR:
             pathListNode.token = "--x";
-//            printf("--x");
             break;
         case S_IWUSR:
             pathListNode.token = "-w-";
-//            printf("-w-");
             break;
         case S_IXUSR + S_IWUSR:
             pathListNode.token = "-wx";
-//            printf("-wx");
             break;
         case S_IRUSR:
             pathListNode.token = "r--";
-//            printf("r--");
             break;
         case S_IRUSR + S_IXUSR:
             pathListNode.token = "r-x";
-//            printf("r-x");
             break;
         case S_IRUSR + S_IWUSR:
             pathListNode.token = "rw-";
-//            printf("rw-");
             break;
         case S_IRWXU:
             pathListNode.token = "rwx";
-//            printf("rwx");
             break;
         default:
-            printf("???");
+            printf("unknow_type");
             break;
     }
-
     PathListAdd(&fs->output, pathListNode);
 }

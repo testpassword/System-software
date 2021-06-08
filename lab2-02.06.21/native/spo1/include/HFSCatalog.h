@@ -1,7 +1,7 @@
 #pragma once
 
 #include "HFSPlus.h"
-#include "Flexcommander.h"
+#include "Commander.h"
 
 struct __attribute__((__packed__)) HFSPlusCatalogKey {
     UInt16              keyLength;

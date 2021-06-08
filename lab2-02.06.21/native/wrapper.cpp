@@ -1,6 +1,6 @@
 #include <napi.h>
-#include <Flexcommander.h>
-#include "flexcommander-lib/src/include/List.h"
+#include <Commander.h>
+#include "spo1/src/include/List.h"
 #include <string.h>
 #include <stdint.h>
 #include <memory.h>
@@ -12,7 +12,8 @@
 static FlexCommanderProbeInfo probeInfo;
 static FlexCommanderFS fs;
 static char* currentDir = NULL;
-static char* str = NULL;
+
+char* napiToStr(const Napi::CallbackInfo &info) { return strdup(info[0].ToString().Utf8Value().c_str()); }
 
 void removeNewlineChars(char* str) {
     int index = 0;
@@ -57,21 +58,16 @@ Napi::String ConstructOutputString(PathListNode* list, const Napi::Env& env) {
 
 Napi::Number init(const Napi::CallbackInfo &info) { return Napi::Number::New(info.Env(), Init(&probeInfo)); }
 
-Napi::Number probeDevs(const Napi::CallbackInfo &info) { return Napi::Number::New(info.Env(), ProbeDevices(&probeInfo)); }
-
 Napi::Number open(const Napi::CallbackInfo &info) { return Napi::Number::New(info.Env(), FlexOpen(info[0].ToString().Utf8Value().c_str(), &fs)); }
 
 Napi::Number loadFS(const Napi::CallbackInfo &info) {
     currentDir = (char*) calloc(CURRENT_DIR_STRING_LENGTH, sizeof(char));
-    str = (char*) calloc(COMMAND_MAX_LENGTH, sizeof(char));
+    char* path = (char*) calloc(COMMAND_MAX_LENGTH, sizeof(char));
     currentDir[0] = '/';
     return Napi::Number::New(info.Env(), 0);
 }
 
-void close(const Napi::CallbackInfo &info) {
-    if (str) free(str);
-    if (currentDir) free(currentDir);
-}
+void close(const Napi::CallbackInfo &info) { if (currentDir) free(currentDir); }
 
 void printCurDir(const Napi::CallbackInfo &info) {
     removeNewlineChars(currentDir);
@@ -83,32 +79,29 @@ void printCurDir(const Napi::CallbackInfo &info) {
 Napi::String partitions(const Napi::CallbackInfo &info) { return ConstructOutputString(IterateDevices(&probeInfo), info.Env()); }
 
 Napi::String cd(const Napi::CallbackInfo &info) {
-    memset(str, 0, COMMAND_MAX_LENGTH);
-    memcpy(str, info[0].ToString().Utf8Value().c_str(), info[0].ToString().Utf8Value().length());
-    if (parsePath(str, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
-    if (FlexSetCurrentDir(str, &fs)) return Napi::String::New(info.Env(), "Path doesn't exist!\n");
+    char* path = napiToStr(info);
+    if (parsePath(path, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
+    if (FlexSetCurrentDir(path, &fs)) return Napi::String::New(info.Env(), "Path doesn't exist!\n");
     else {
         memset(currentDir, 0, CURRENT_DIR_STRING_LENGTH);
-        memcpy(currentDir, str + 3, CURRENT_DIR_STRING_LENGTH - 3);
+        memcpy(currentDir, path, CURRENT_DIR_STRING_LENGTH);
         return Napi::String::New(info.Env(), "");
     }
 }
 
 Napi::String cp(const Napi::CallbackInfo &info) {
-    memset(str, 0, COMMAND_MAX_LENGTH);
-    memcpy(str, info[0].ToString().Utf8Value().c_str(), info[0].ToString().Utf8Value().length());
-    if (parsePath(str, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
-    FlexCopy(str, currentDir, &fs);
+    char* path = napiToStr(info);
+    if (parsePath(path, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
+    FlexCopy(path, currentDir, &fs);
     return Napi::String::New(info.Env(), "");
 }
 
 Napi::String pwd(const Napi::CallbackInfo &info) { return Napi::String::New(info.Env(), currentDir); }
 
 Napi::String ls(const Napi::CallbackInfo &info) {
-    memset(str, 0, COMMAND_MAX_LENGTH);
-    memcpy(str, info[0].ToString().Utf8Value().c_str(), info[0].ToString().Utf8Value().length());
-    if (parsePath(str, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
-    FlexListDirContent(str, &fs);
+    char* path = napiToStr(info);
+    if (parsePath(path, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
+    FlexListDirContent(path, &fs);
     return ConstructOutputString(fs.output, info.Env());
 }
 
@@ -116,10 +109,6 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(
             Napi::String::New(env, "init"),
             Napi::Function::New(env, init)
-            );
-    exports.Set(
-            Napi::String::New(env, "probeDevs"),
-            Napi::Function::New(env, probeDevs)
             );
     exports.Set(
             Napi::String::New(env, "partitions"),

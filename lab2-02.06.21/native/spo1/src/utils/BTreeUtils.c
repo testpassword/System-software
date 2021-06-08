@@ -1,7 +1,7 @@
 #include "BTreeUtils.h"
 #include <string.h>
 #include <stdlib.h>
-#include <FlexIO.h>
+#include <Commander.h>
 #include "Endians.h"
 #include <List.h>
 
@@ -10,7 +10,6 @@ void GetNextBlockNum(uint64_t* _nodeBlockNumber, uint64_t* _extentNum, uint64_t*
     uint64_t nodeBlockNumber = *_nodeBlockNumber;
     uint64_t extentNum = *_extentNum;
     uint64_t currentBlockNum = *_currentBlockNum;
-
     if (nodeBlockNumber == fs.volumeHeader.catalogFile.extents[extentNum].startBlock +
                            fs.volumeHeader.catalogFile.extents[extentNum].blockCount - 1) {
         extentNum += 1;
@@ -24,7 +23,6 @@ void GetNextBlockNum(uint64_t* _nodeBlockNumber, uint64_t* _extentNum, uint64_t*
         }
     }
     currentBlockNum = descriptor.fLink;
-
     *_nodeBlockNumber = nodeBlockNumber;
     *_extentNum = extentNum;
     *_currentBlockNum = currentBlockNum;
@@ -47,48 +45,33 @@ void FillRecordAddress(BTHeaderRec btreeHeader, BTNodeDescriptor descriptor, cha
 
 char *HFSStringToBytes(HFSUniStr255 hfsStr) {
     char *str = calloc(hfsStr.length + 1, 1);
-    for (int i = 0; i < hfsStr.length; i++) {
-        str[i] = hfsStr.unicode[i];
-    }
+    for (int i = 0; i < hfsStr.length; i++) str[i] = hfsStr.unicode[i];
     return str;
 }
 
 bool HFSStrToStrCmp(HFSUniStr255 hfsStr, const char *str) {
     size_t strLen = strlen(str);
-    if (strLen != hfsStr.length) {
-        return false;
-    }
-
+    if (strLen != hfsStr.length) return false;
     int i = 0;
-    for (i = 0; i < hfsStr.length; i++) {
-        if (hfsStr.unicode[i] != str[i]) {
+    for (i = 0; i < hfsStr.length; i++)
+        if (hfsStr.unicode[i] != str[i])
             return false;
-        }
-    }
-
     return true;
 }
 
-//Checks whether given node is HFS+ Private Data node
 bool CheckForHFSPrivateDataNode(HFSPlusCatalogKey key) {
     if (key.nodeName.length != 21) return false;
     uint16_t checkSymbols[21] = {0, 0, 0, 0, 72, 70, 83, 43, 32, 80, 114, 105, 118, 97, 116, 101, 32, 68, 97, 116, 97};
-    for (int i = 0; i < 21; i++) {
-        if (key.nodeName.unicode[i] != checkSymbols[i]) return false;
-    }
+    for (int i = 0; i < 21; i++) if (key.nodeName.unicode[i] != checkSymbols[i]) return false;
     return true;
 }
 
 void PrintHFSUnicode(HFSUniStr255 str, FlexCommanderFS* fs) {
     char* strPtr = (char*) calloc(str.length, sizeof(char));
-    for (int i = 0; i < str.length; i++) {
-        if (str.unicode[i] >= 32) {
-//            printf("%lc", str.unicode[i]);
-            if (str.unicode[i] >= 32) {
+    for (int i = 0; i < str.length; i++)
+        if (str.unicode[i] >= 32)
+            if (str.unicode[i] >= 32)
                 strPtr[i] = str.unicode[i];
-            }
-        }
-    }
     PathListNode pathListNode;
     pathListNode.token = strPtr;
     PathListAdd(&fs->output, pathListNode);

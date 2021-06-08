@@ -1,7 +1,5 @@
 #pragma once
-
 #include <stdint.h>
-
 #define HFS_SIGNATURE 0x2b48
 #define HFS_START_OFFSET 1024
 

@@ -7,24 +7,15 @@
 #include <List.h>
 #include <HFSPlusBTree.h>
 #include "Copy.h"
-#include "../utils/Utils.h"
 
 void MakePath(char* dir) {
     char cwd[512];
-    if (dir[0] == '.') {
-        getcwd(cwd, sizeof(cwd));
-    }
-
+    if (dir[0] == '.') getcwd(cwd, sizeof(cwd));
     char tmp[1024];
     char* p = NULL;
     size_t len;
-
-    if (dir[0] == '.') {
-        snprintf(tmp, sizeof(tmp), "%s%s", cwd, dir + 1);
-    } else {
-        snprintf(tmp, sizeof(tmp), "%s", dir);
-    }
-
+    if (dir[0] == '.') snprintf(tmp, sizeof(tmp), "%s%s", cwd, dir + 1);
+    else snprintf(tmp, sizeof(tmp), "%s", dir);
     len = strlen(tmp);
     if (tmp[len - 1] == '/')
         tmp[len - 1] = 0;
@@ -57,11 +48,9 @@ void CopyFile(const char* dest, const char* filename, HFSPlusCatalogFile file, F
     }
     for (int i = 0; i < 8; i++) {
         HFSPlusExtentRecord extent = file.dataFork.extents[i];
-        if (extent.startBlock != 0 && extent.blockCount != 0) {
-            for (int offset = 0; offset < extent.blockCount; offset++) {
+        if (extent.startBlock != 0 && extent.blockCount != 0)
+            for (int offset = 0; offset < extent.blockCount; offset++)
                 CopyFileBlock(extent.startBlock + offset, destFile, fs);
-            }
-        }
     }
     fclose(destFile);
 }
@@ -74,26 +63,21 @@ void CopyDirectory(const char* _src, const char* _dest, uint32_t parentID, BTHea
     char *dest = calloc(_destLen, 1);
     strcpy(src, _src);
     strcpy(dest, _dest);
-
     char *srcCopy = calloc(_srcLen, 1);
     strcpy(srcCopy, _src);
     PathListNode* list = SplitPathWithDelimeter(srcCopy, "/");
     free(srcCopy);
-
     if (list) {
         PathListNode* lastNode = GetPathListLastNode(&list);
         strcat(dest, "/");
         strcat(dest, lastNode->token);
     }
-
     MakePath(dest);
     printf("Created directory %s successfully!\n", dest);
-
     copyInfo.dest = dest;
     PathListNode * childrenDirs = GetChildrenDirectoriesList(parentID, btreeHeader, fs, copyInfo);
     PathListNode * childrenDirsListHead = childrenDirs;
     srcCopy = calloc(_srcLen, 1);
-
     while(childrenDirs) {
         strcpy(srcCopy, _src);
         strcat(srcCopy, "/");
@@ -102,7 +86,6 @@ void CopyDirectory(const char* _src, const char* _dest, uint32_t parentID, BTHea
         memset(srcCopy, 0, _srcLen);
         childrenDirs = childrenDirs->next;
     }
-
     free(src);
     free(dest);
     free(srcCopy);

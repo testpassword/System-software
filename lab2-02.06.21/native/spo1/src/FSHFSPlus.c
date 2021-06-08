@@ -1,17 +1,31 @@
-#include <Flexcommander.h>
+#include <Commander.h>
 #include <HFSPlus.h>
 #include <fcntl.h>
 #include <arpa/inet.h>
 #include <byteswap.h>
 #include <HFSPlusBTree.h>
-#include <FlexIO.h>
+#include <IOFunc.h>
 #include <List.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include "utils/Endians.h"
 #include "copy/Copy.h"
-#include "utils/Utils.h"
+
+PathListNode *SplitPathWithDelimeter(char *path, const char* delimeter) {
+    PathListNode *listHead = NULL;
+    char *pathToken;
+    while ((pathToken = strsep(&path, delimeter))) {
+        if (strcmp(pathToken, "") == 0) continue;
+        PathListNode newNode;
+        memset(&newNode, 0, sizeof(PathListNode));
+        newNode.token = calloc(sizeof(char), strlen(pathToken) + 1);
+        newNode.token = strcpy(newNode.token, pathToken);
+        PathListAdd(&listHead, newNode);
+    }
+    return listHead;
+}
+
 
 int Verify(FlexCommanderFS *fs);
 
@@ -19,7 +33,7 @@ int ReadBtreeHeader(uint64_t pos, FlexCommanderFS *fs);
 
 void ExtractCatalogBtreeHeader(uint64_t block, BTHeaderRec *header, FlexCommanderFS *fs);
 
-PathListNode *SplitPath(char *path) { // TO DO: Get rid of this function
+PathListNode *SplitPath(char *path) {
     PathListNode *listHead = NULL;
     char *pathToken;
     PathListNode node;
@@ -75,11 +89,7 @@ int Verify(FlexCommanderFS *fs) {
         return -1;
     }
     if (fread(&header, sizeof(HFSPlusVolumeHeader), 1, fs->file) != 1) {
-        if (feof(fs->file)) {
-            fprintf(stderr, "Unexpected EOF!\n");
-        } else {
-            fprintf(stderr, "Can't read HFS volume header!\n");
-        }
+        fprintf(stderr, (feof(fs->file)) ? "Unexpected EOF!\n" : "Can't read HFS volume header!\n");
         return -1;
     }
     if (header.signature == HFS_SIGNATURE) {
@@ -91,9 +101,7 @@ int Verify(FlexCommanderFS *fs) {
             header.catalogFile.extents[i].startBlock = bswap_32(header.catalogFile.extents[i].startBlock);
             header.catalogFile.extents[i].blockCount = bswap_32(header.catalogFile.extents[i].blockCount);
             totalBlocks += header.catalogFile.extents[i].blockCount;
-            if (header.catalogFile.extents[i].startBlock != 0 && header.catalogFile.extents[i].blockCount != 0) {
-                extents += 1;
-            }
+            if (header.catalogFile.extents[i].startBlock != 0 && header.catalogFile.extents[i].blockCount != 0) extents += 1;
         }
         fs->volumeHeader = header;
         return 0;
@@ -179,45 +187,27 @@ int FlexCopy(const char* path, const char* currentDir, FlexCommanderFS* fs) {
     char *src;
     char *dest;
     uint32_t i = 0;
-
     while (list) {
-        if (i == 0) {
-            src = list->token;
-        }
+        if (i == 0) src = list->token;
         else {
             dest = list->token;
-            if (dest[strlen(dest) - 1] == '\n') {
-                dest[strlen(dest) - 1] = '\0';
-            }
+            if (dest[strlen(dest) - 1] == '\n') dest[strlen(dest) - 1] = '\0';
         }
         i++;
         list = list->next;
     }
     PathListClear(listHead);
-
     char srcPath[1024];
-    if (src[0] == '.') {
-        if (strlen(src) > 1) {
-            snprintf(srcPath, sizeof(srcPath), "%s%s", currentDir, src + 1);
-        }
-        else {
-            snprintf(srcPath, sizeof(srcPath), "%s", currentDir);
-        }
-    }
-    else {
-        snprintf(srcPath, sizeof(srcPath), "%s", src);
-    }
-
+    if (src[0] == '.')
+        (strlen(src) > 1) ? snprintf(srcPath, sizeof(srcPath), "%s%s", currentDir, src + 1) : snprintf(srcPath, sizeof(srcPath), "%s", currentDir);
+    else snprintf(srcPath, sizeof(srcPath), "%s", src);
     BTHeaderRec header;
-
     ExtractCatalogBtreeHeader(fs->catalogFileBlock, &header, fs);
-
-    char * srcPathCopy = calloc(strlen(srcPath) + 1, 1);
+    char* srcPathCopy = calloc(strlen(srcPath) + 1, 1);
     strcpy(srcPathCopy, srcPath);
     PathListNode *splitedSrcPathList = SplitPath(srcPathCopy);
     PathListNode *splitedSrcPathListStart = splitedSrcPathList;
     free(srcPathCopy);
-
     uint32_t parentID = 2;
     while (splitedSrcPathList) {
         if (splitedSrcPathList->next == NULL) {
@@ -227,15 +217,10 @@ int FlexCopy(const char* path, const char* currentDir, FlexCommanderFS* fs) {
             }
             break;
         }
-        else {
-            parentID = FindIdOfFolder(splitedSrcPathList->next->token, parentID, header, *fs);
-        }
+        else parentID = FindIdOfFolder(splitedSrcPathList->next->token, parentID, header, *fs);
         splitedSrcPathList  = splitedSrcPathList->next;
     }
-
-    if (parentID != 0) {
-        CopyDirectory(srcPath, dest, parentID, header, *fs);
-    }
+    if (parentID != 0) CopyDirectory(srcPath, dest, parentID, header, *fs);
     else {
         splitedSrcPathList = splitedSrcPathListStart;
         parentID = 2;
@@ -248,21 +233,16 @@ int FlexCopy(const char* path, const char* currentDir, FlexCommanderFS* fs) {
                 }
                 file = GetFileRecord(parentID, header, *fs);
                 break;
-            } else {
-                parentID = FindIdOfFile(splitedSrcPathList->next->token, parentID, header, *fs);
-            }
+            } else parentID = FindIdOfFile(splitedSrcPathList->next->token, parentID, header, *fs);
             splitedSrcPathList = splitedSrcPathList->next;
         }
-        if (parentID == 0) {
-            printf("Something gone wrong! :(\n");
-        }
+        if (parentID == 0) printf("Something gone wrong! :(\n");
         else {
             CopyFile(dest, splitedSrcPathList->token, *file, fs);
             printf("Copied file successfully!\n");
         }
         free(file);
     }
-
     PathListClear(splitedSrcPathListStart);
     return 0;
 }

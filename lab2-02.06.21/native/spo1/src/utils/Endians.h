@@ -1,5 +1,4 @@
 #pragma once
-
 #include <HFSCatalog.h>
 #include "HFSPlusBTree.h"
 
