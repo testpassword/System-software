@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include "HFSPlus.h"
 #include "Commander.h"
-#include "../src/copy/Copy.h"
+#include "../include/IOFunc.h"
 
 enum BTNodeType {
     LeafNode = -1,

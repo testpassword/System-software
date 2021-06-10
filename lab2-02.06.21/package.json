@@ -4,7 +4,6 @@
   "description": "Node.js wrapper for C HFS+ file explorer",
   "main": "shell.js",
   "scripts": {
-    "start": "echo toor | sudo -S node shell.js",
     "info": "echo toor | sudo -S node shell.js -I",
     "explorer": "echo toor | sudo -S node shell.js -E /dev/sdb1",
     "build": "echo toor | sudo -S cmake-js -O ./build -d ./native compile"
