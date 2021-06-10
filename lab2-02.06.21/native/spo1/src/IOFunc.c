@@ -35,7 +35,7 @@ PathListNode* IterateDevices(ProbeInfo* info) {
     return 0;
 }
 
-long long FlexRead(void * buffer, size_t structSize, size_t amount, FILE * file) {
+long long readItem(void * buffer, size_t structSize, size_t amount, FILE * file) {
     if (fread(buffer, structSize, amount, file) != amount) {
         fprintf(stderr, (feof(file)) ? "Unexpected EOF!\n" : "Can't read!\n");
         return -1;
@@ -43,7 +43,7 @@ long long FlexRead(void * buffer, size_t structSize, size_t amount, FILE * file)
     return amount;
 }
 
-int FlexFSeek(FILE *file, long int offset, int mode) {
+int seekItem(FILE *file, long int offset, int mode) {
     if (fseek(file, offset, mode)) {
         fprintf(stderr, "Can't set 1024 bytes offset!\n");
         return -1;

@@ -29,10 +29,9 @@ void GetNextBlockNum(uint64_t* _nodeBlockNumber, uint64_t* _extentNum, uint64_t*
 }
 
 void ReadNodeDescriptor(FileSystem fs, uint64_t nodeBlockNumber, BTNodeDescriptor *descriptor, char *rawNode) {
-    FlexFSeek(fs.file, nodeBlockNumber * fs.blockSize, SEEK_SET);
-    FlexRead(rawNode, fs.blockSize, 1, fs.file);
-    descriptor = memcpy(descriptor, &CAST_PTR_TO_TYPE(BTNodeDescriptor, rawNode), sizeof(BTNodeDescriptor));
-    ConvertBTreeNodeDescriptor(descriptor);
+    seekItem(fs.file, nodeBlockNumber * fs.blockSize, SEEK_SET);
+    readItem(rawNode, fs.blockSize, 1, fs.file);
+    ConvertBTreeNodeDescriptor(memcpy(descriptor, &CAST_PTR_TO_TYPE(BTNodeDescriptor, rawNode), sizeof(BTNodeDescriptor)));
 }
 
 void FillRecordAddress(BTHeaderRec btreeHeader, BTNodeDescriptor descriptor, char *rawNode, uint16_t *recordAddress) {

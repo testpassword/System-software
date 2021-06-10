@@ -149,13 +149,13 @@ int setCurDir(const char* path, FileSystem* fs) {
 
 void ExtractCatalogBtreeHeader(uint64_t block, BTHeaderRec *header, FileSystem* fs) {
     BTNodeDescriptor btreeHeaderDescr;
-    FlexFSeek(fs->file, block * fs->blockSize, SEEK_SET);
-    FlexRead(&btreeHeaderDescr, sizeof(BTNodeDescriptor), 1, fs->file);
+    seekItem(fs->file, block * fs->blockSize, SEEK_SET);
+    readItem(&btreeHeaderDescr, sizeof(BTNodeDescriptor), 1, fs->file);
     if (btreeHeaderDescr.kind != HeaderNode) {
         fputs("Unexpected node type. Expected header type!\n", stderr);
         return;
     }
-    FlexRead(header, sizeof(BTHeaderRec), 1, fs->file);
+    readItem(header, sizeof(BTHeaderRec), 1, fs->file);
     ConvertBTreeHeader(header);
     ConvertBTreeNodeDescriptor(&btreeHeaderDescr);
 }
