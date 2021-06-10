@@ -140,4 +140,4 @@ void PrintCatalogFolder(HFSPlusCatalogFolder folder);
 void PrintCatalogFile(HFSPlusCatalogFile file);
 void PrintCatalogThread(HFSPlusCatalogThread thread);
 void PrintCatalogIndexNode(BTCatalogIndexNode node);
-void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType, FlexCommanderFS* fs);
+void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType, FileSystem* fs);

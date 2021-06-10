@@ -27,7 +27,7 @@ uint32_t ParseLeafNode(char *rawNode, const char *folderName, uint32_t folderPar
     return 0;
 }
 
-void ParseLeafNodeContent(char *rawNode, uint32_t parentID, BTHeaderRec btreeHeader, BTNodeDescriptor descriptor, FlexCommanderFS *fs) {
+void ParseLeafNodeContent(char *rawNode, uint32_t parentID, BTHeaderRec btreeHeader, BTNodeDescriptor descriptor, FileSystem *fs) {
     uint16_t recordAddress[descriptor.numRecords];
     FillRecordAddress(btreeHeader, descriptor, rawNode, recordAddress);
     for (int i = 0; i < descriptor.numRecords; i++) {
@@ -67,7 +67,7 @@ void ParseLeafNodeContent(char *rawNode, uint32_t parentID, BTHeaderRec btreeHea
     }
 }
 
-void ListDirectoryContent(uint32_t parentID, BTHeaderRec catalogBTHeader, FlexCommanderFS *fs) {
+void ListDirectoryContent(uint32_t parentID, BTHeaderRec catalogBTHeader, FileSystem *fs) {
     char *rawNode = calloc(sizeof(char), fs->blockSize);
     uint64_t nodeBlockNumber = catalogBTHeader.firstLeafNode + fs->catalogFileBlock;
     BTNodeDescriptor descriptor;
@@ -83,7 +83,7 @@ void ListDirectoryContent(uint32_t parentID, BTHeaderRec catalogBTHeader, FlexCo
     free(rawNode);
 }
 
-uint32_t FindIdOfFolder(const char *folderName, uint32_t folderParentId, BTHeaderRec catalogBTHeader, FlexCommanderFS fs) {
+uint32_t FindIdOfFolder(const char *folderName, uint32_t folderParentId, BTHeaderRec catalogBTHeader, FileSystem fs) {
     char *rawNode = calloc(sizeof(char), fs.blockSize);
     uint64_t nodeBlockNumber = catalogBTHeader.firstLeafNode + fs.catalogFileBlock;
     BTNodeDescriptor descriptor;
@@ -147,7 +147,7 @@ uint32_t ParseLeafNodeWithCondition(char *rawNode, const char *folderName, uint3
     return 0;
 }
 
-uint32_t FindIdOfFile(const char *fileName, uint32_t folderParentId, BTHeaderRec catalogBTHeader, FlexCommanderFS fs) {
+uint32_t FindIdOfFile(const char *fileName, uint32_t folderParentId, BTHeaderRec catalogBTHeader, FileSystem fs) {
     char *rawNode = calloc(sizeof(char), fs.blockSize);
     uint64_t nodeBlockNumber = catalogBTHeader.firstLeafNode + fs.catalogFileBlock;
     BTNodeDescriptor descriptor;
@@ -169,7 +169,7 @@ uint32_t FindIdOfFile(const char *fileName, uint32_t folderParentId, BTHeaderRec
     return id;
 }
 
-HFSPlusCatalogFile *GetFileRecord(uint32_t fileId, BTHeaderRec catalogBTHeader, FlexCommanderFS fs) {
+HFSPlusCatalogFile *GetFileRecord(uint32_t fileId, BTHeaderRec catalogBTHeader, FileSystem fs) {
     char *rawNode = calloc(sizeof(char), fs.blockSize);
     uint64_t nodeBlockNumber = catalogBTHeader.firstLeafNode + fs.catalogFileBlock;
     BTNodeDescriptor descriptor;
@@ -190,7 +190,7 @@ HFSPlusCatalogFile *GetFileRecord(uint32_t fileId, BTHeaderRec catalogBTHeader, 
 
 PathListNode *GetChildrenDirFromNode(uint32_t parentFolderId, const char *rawNode, BTHeaderRec btreeHeader,
                                      BTNodeDescriptor descriptor, PathListNode **listHead, CopyInfo copyInfo,
-                                     FlexCommanderFS fs) {
+                                     FileSystem fs) {
     uint16_t recordAddress[descriptor.numRecords];
     FillRecordAddress(btreeHeader, descriptor, rawNode, recordAddress);
     for (int i = 0; i < descriptor.numRecords; i++) {
@@ -217,7 +217,7 @@ PathListNode *GetChildrenDirFromNode(uint32_t parentFolderId, const char *rawNod
     return *listHead;
 }
 
-PathListNode *GetChildrenDirectoriesList(uint32_t parentFolderId, BTHeaderRec catalogBTHeader, FlexCommanderFS fs, CopyInfo copyInfo) {
+PathListNode *GetChildrenDirectoriesList(uint32_t parentFolderId, BTHeaderRec catalogBTHeader, FileSystem fs, CopyInfo copyInfo) {
     char *rawNode = calloc(sizeof(char), fs.blockSize);
     uint64_t nodeBlockNumber = catalogBTHeader.firstLeafNode + fs.catalogFileBlock;
     BTNodeDescriptor descriptor;

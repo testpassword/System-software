@@ -27,11 +27,11 @@ PathListNode *SplitPathWithDelimeter(char *path, const char* delimeter) {
 }
 
 
-int Verify(FlexCommanderFS *fs);
+int Verify(FileSystem* fs);
 
-int ReadBtreeHeader(uint64_t pos, FlexCommanderFS *fs);
+int ReadBtreeHeader(uint64_t pos, FileSystem* fs);
 
-void ExtractCatalogBtreeHeader(uint64_t block, BTHeaderRec *header, FlexCommanderFS *fs);
+void ExtractCatalogBtreeHeader(uint64_t block, BTHeaderRec *header, FileSystem* fs);
 
 PathListNode *SplitPath(char *path) {
     PathListNode *listHead = NULL;
@@ -50,31 +50,10 @@ PathListNode *SplitPath(char *path) {
     return listHead;
 }
 
-uint64_t GetCatalogueFileLocation(HFSPlusVolumeHeader header, FlexCommanderFS *fs) {
-    uint64_t catalogFirstBlockNum = htonl(header.catalogFile.extents[0].startBlock);
-    uint64_t catalogFileLocation = catalogFirstBlockNum * fs->blockSize;
-    printf("Catalog file location: %lx\n", catalogFileLocation);
-    printf("Catalog file first block: %lu\n", catalogFirstBlockNum);
-    return catalogFileLocation;
-}
-
-void PrintVolumeHeader(HFSPlusVolumeHeader header, FlexCommanderFS *fs) {
-    printf("Volume info:\n");
-    printf("Total files: %d\n", htonl(header.fileCount));
-    printf("Total folders: %d\n", htonl(header.folderCount));
-    printf("Block size: %d\n", fs->blockSize);
-    printf("Total blocks: %d\n", htonl(header.totalBlocks));
-    printf("Next free block: %d\n", htonl(header.nextAllocation));
-    printf("\nCatalog file info:\n");
-    printf("Catalog file logical size: %lu\n", bswap_64(header.catalogFile.logicalSize));
-    printf("Catalog file clump size: %u\n", htonl(header.catalogFile.clumpSize));
-    printf("Catalog file total blocks: %u\n", htonl(header.catalogFile.totalBlocks));
-}
-
-int FlexOpen(const char *path, FlexCommanderFS *fs) {
+int openByPath(const char *path, FileSystem* fs) {
     FILE *dev = fopen(path, "rb");
     if (!dev) {
-        perror("Can't open dev!\n");
+        perror("unexpected error, can't open\n");
         return -1;
     }
     fs->file = dev;
@@ -82,7 +61,7 @@ int FlexOpen(const char *path, FlexCommanderFS *fs) {
     return 0;
 }
 
-int Verify(FlexCommanderFS *fs) {
+int Verify(FileSystem* fs) {
     HFSPlusVolumeHeader header;
     if (fseek(fs->file, HFS_START_OFFSET, SEEK_SET)) {
         fprintf(stderr, "Can't set 1024 bytes offset!\n");
@@ -106,14 +85,14 @@ int Verify(FlexCommanderFS *fs) {
         fs->volumeHeader = header;
         return 0;
     } else {
-        fprintf(stderr, "Provided file is not a HFS volume!\n");
+        fprintf(stderr, "path doesn't contain HFS+ fs\n");
         return -1;
     }
 }
 
-int FlexListDirContent(const char *path, FlexCommanderFS *fs) {
+int dirContent(const char *path, FileSystem* fs) {
     if (strcmp(path, "") == 0 | strcmp(path, "\n") == 0) {
-        printf("Path doesn't exist!\n");
+        printf("required path doesn't exist\n");
         return 0;
     }
     size_t strLength = strlen(path) + 1;
@@ -130,7 +109,7 @@ int FlexListDirContent(const char *path, FlexCommanderFS *fs) {
     uint32_t parentID = 2;
     while (list) {
         if (list->next == NULL) {
-            if (parentID == 0) printf("Path doesn't exist!\n");
+            if (parentID == 0) printf("required path doesn't exist\n");
             ListDirectoryContent(parentID, catalogFileHeader, fs);
             break;
         }
@@ -141,7 +120,7 @@ int FlexListDirContent(const char *path, FlexCommanderFS *fs) {
     return 0;
 }
 
-int FlexSetCurrentDir(const char* path, FlexCommanderFS* fs) {
+int setCurDir(const char* path, FileSystem* fs) {
     if (strcmp(path, "") == 0 | strcmp(path, "\n") == 0) return -1;
     int result = -1;
     char *pathCopy = malloc(strlen(path) + 1);
@@ -168,7 +147,7 @@ int FlexSetCurrentDir(const char* path, FlexCommanderFS* fs) {
     return result;
 }
 
-void ExtractCatalogBtreeHeader(uint64_t block, BTHeaderRec *header, FlexCommanderFS *fs) {
+void ExtractCatalogBtreeHeader(uint64_t block, BTHeaderRec *header, FileSystem* fs) {
     BTNodeDescriptor btreeHeaderDescr;
     FlexFSeek(fs->file, block * fs->blockSize, SEEK_SET);
     FlexRead(&btreeHeaderDescr, sizeof(BTNodeDescriptor), 1, fs->file);
@@ -181,7 +160,7 @@ void ExtractCatalogBtreeHeader(uint64_t block, BTHeaderRec *header, FlexCommande
     ConvertBTreeNodeDescriptor(&btreeHeaderDescr);
 }
 
-int FlexCopy(const char* path, const char* currentDir, FlexCommanderFS* fs) {
+int copyItems(const char* path, const char* currentDir, FileSystem* fs) {
     PathListNode *list = SplitPathWithDelimeter(path, " ");
     PathListNode *listHead = list;
     char *src;
@@ -236,10 +215,10 @@ int FlexCopy(const char* path, const char* currentDir, FlexCommanderFS* fs) {
             } else parentID = FindIdOfFile(splitedSrcPathList->next->token, parentID, header, *fs);
             splitedSrcPathList = splitedSrcPathList->next;
         }
-        if (parentID == 0) printf("Something gone wrong! :(\n");
+        if (parentID == 0) printf("unexpected error, reboot your linux please\n");
         else {
             CopyFile(dest, splitedSrcPathList->token, *file, fs);
-            printf("Copied file successfully!\n");
+            printf("copied\n");
         }
         free(file);
     }

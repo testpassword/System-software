@@ -22,7 +22,8 @@ else if (args.length == 4 && ['--explorer', '-E'].includes(args[2])) {
             else {
                 const { action, arg } = parse_cmd(cmd)
                 if (action === "ls") console.log(native.ls((arg === "") ? "/" : arg))
-                else if (action === "cp") console.log(native.cp(arg))
+                else if (action === "cp")
+                    console.log((arg.split(" ").length !== 2) ? "you should set 2 arguments for `cp` command" : native.cp(arg))
                 else if (action === "cd") console.log(native.cd(arg))
                 else console.log(`supported commands:
                     pwd : show path inside mounted fs

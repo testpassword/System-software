@@ -54,7 +54,7 @@ void PrintCatalogIndexNode(BTCatalogIndexNode node) {
     printf("Index: %d\n", node.nextNode);
 }
 
-void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType, FlexCommanderFS* fs) {
+void PrintPermissions(HFSPlusBSDInfo permissions, HFSDataRecordType recordType, FileSystem* fs) {
     const uint32_t ownerMask = 0000700;
     const uint32_t groupMask = 0000070;
     const uint32_t otherMask = 0000007;

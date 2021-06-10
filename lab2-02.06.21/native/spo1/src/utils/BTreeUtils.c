@@ -6,7 +6,7 @@
 #include <List.h>
 
 void GetNextBlockNum(uint64_t* _nodeBlockNumber, uint64_t* _extentNum, uint64_t* _currentBlockNum,
-                     BTNodeDescriptor descriptor, FlexCommanderFS fs) {
+                     BTNodeDescriptor descriptor, FileSystem fs) {
     uint64_t nodeBlockNumber = *_nodeBlockNumber;
     uint64_t extentNum = *_extentNum;
     uint64_t currentBlockNum = *_currentBlockNum;
@@ -28,7 +28,7 @@ void GetNextBlockNum(uint64_t* _nodeBlockNumber, uint64_t* _extentNum, uint64_t*
     *_currentBlockNum = currentBlockNum;
 }
 
-void ReadNodeDescriptor(FlexCommanderFS fs, uint64_t nodeBlockNumber, BTNodeDescriptor *descriptor, char *rawNode) {
+void ReadNodeDescriptor(FileSystem fs, uint64_t nodeBlockNumber, BTNodeDescriptor *descriptor, char *rawNode) {
     FlexFSeek(fs.file, nodeBlockNumber * fs.blockSize, SEEK_SET);
     FlexRead(rawNode, fs.blockSize, 1, fs.file);
     descriptor = memcpy(descriptor, &CAST_PTR_TO_TYPE(BTNodeDescriptor, rawNode), sizeof(BTNodeDescriptor));
@@ -66,7 +66,7 @@ bool CheckForHFSPrivateDataNode(HFSPlusCatalogKey key) {
     return true;
 }
 
-void PrintHFSUnicode(HFSUniStr255 str, FlexCommanderFS* fs) {
+void PrintHFSUnicode(HFSUniStr255 str, FileSystem* fs) {
     char* strPtr = (char*) calloc(str.length, sizeof(char));
     for (int i = 0; i < str.length; i++)
         if (str.unicode[i] >= 32)

@@ -9,8 +9,8 @@
 #define CURRENT_DIR_STRING_LENGTH 255 + 3 + 255
 #define COMMAND_MAX_LENGTH CURRENT_DIR_STRING_LENGTH
 
-static FlexCommanderProbeInfo probeInfo;
-static FlexCommanderFS fs;
+static ProbeInfo probeInfo;
+static FileSystem fs;
 static char* currentDir = NULL;
 
 char* napiToStr(const Napi::CallbackInfo &info) { return strdup(info[0].ToString().Utf8Value().c_str()); }
@@ -58,7 +58,7 @@ Napi::String ConstructOutputString(PathListNode* list, const Napi::Env& env) {
 
 Napi::Number init(const Napi::CallbackInfo &info) { return Napi::Number::New(info.Env(), Init(&probeInfo)); }
 
-Napi::Number open(const Napi::CallbackInfo &info) { return Napi::Number::New(info.Env(), FlexOpen(info[0].ToString().Utf8Value().c_str(), &fs)); }
+Napi::Number open(const Napi::CallbackInfo &info) { return Napi::Number::New(info.Env(), openByPath(info[0].ToString().Utf8Value().c_str(), &fs)); }
 
 Napi::Number loadFS(const Napi::CallbackInfo &info) {
     currentDir = (char*) calloc(CURRENT_DIR_STRING_LENGTH, sizeof(char));
@@ -80,8 +80,8 @@ Napi::String partitions(const Napi::CallbackInfo &info) { return ConstructOutput
 
 Napi::String cd(const Napi::CallbackInfo &info) {
     char* path = napiToStr(info);
-    if (parsePath(path, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
-    if (FlexSetCurrentDir(path, &fs)) return Napi::String::New(info.Env(), "Path doesn't exist!\n");
+    if (parsePath(path, currentDir)) return Napi::String::New(info.Env(), "invalid path\n");
+    if (setCurDir(path, &fs)) return Napi::String::New(info.Env(), "required path doesn't exist\n");
     else {
         memset(currentDir, 0, CURRENT_DIR_STRING_LENGTH);
         memcpy(currentDir, path, CURRENT_DIR_STRING_LENGTH);
@@ -92,7 +92,7 @@ Napi::String cd(const Napi::CallbackInfo &info) {
 Napi::String cp(const Napi::CallbackInfo &info) {
     char* path = napiToStr(info);
     if (parsePath(path, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
-    FlexCopy(path, currentDir, &fs);
+    copyItems(path, currentDir, &fs);
     return Napi::String::New(info.Env(), "");
 }
 
@@ -101,7 +101,7 @@ Napi::String pwd(const Napi::CallbackInfo &info) { return Napi::String::New(info
 Napi::String ls(const Napi::CallbackInfo &info) {
     char* path = napiToStr(info);
     if (parsePath(path, currentDir)) return Napi::String::New(info.Env(), "Incorrect path!\n");
-    FlexListDirContent(path, &fs);
+    dirContent(path, &fs);
     return ConstructOutputString(fs.output, info.Env());
 }
 

@@ -28,7 +28,7 @@ void MakePath(char* dir) {
     mkdir(tmp, S_IRWXU);
 }
 
-void CopyFileBlock(uint64_t blockNum, FILE* fileDestination, FlexCommanderFS* fs) {
+void CopyFileBlock(uint64_t blockNum, FILE* fileDestination, FileSystem* fs) {
     char* fileBlock = calloc(1, fs->blockSize);
     fseek(fs->file, blockNum * fs->blockSize, SEEK_SET);
     uint32_t read = fread(fileBlock, fs->blockSize, 1, fs->file);
@@ -36,14 +36,14 @@ void CopyFileBlock(uint64_t blockNum, FILE* fileDestination, FlexCommanderFS* fs
     free(fileBlock);
 }
 
-void CopyFile(const char* dest, const char* filename, HFSPlusCatalogFile file, FlexCommanderFS* fs) {
+void CopyFile(const char* dest, const char* filename, HFSPlusCatalogFile file, FileSystem* fs) {
     MakePath(dest);
     char filePath[512];
     snprintf(filePath, sizeof(filePath), "%s/%s", dest, filename);
     FILE* destFile = NULL;
     destFile = fopen(filePath, "wb");
     if (destFile == NULL) {
-        fprintf(stderr, "Unexpected NULL destination file!\n");
+        fprintf(stderr, "empty file\n");
         return;
     }
     for (int i = 0; i < 8; i++) {
@@ -55,7 +55,7 @@ void CopyFile(const char* dest, const char* filename, HFSPlusCatalogFile file, F
     fclose(destFile);
 }
 
-void CopyDirectory(const char* _src, const char* _dest, uint32_t parentID, BTHeaderRec btreeHeader, FlexCommanderFS fs) {
+void CopyDirectory(const char* _src, const char* _dest, uint32_t parentID, BTHeaderRec btreeHeader, FileSystem fs) {
     CopyInfo copyInfo;
     const size_t _srcLen = strlen(_src) + 256;
     const size_t _destLen = strlen(_dest) + 256;
@@ -73,7 +73,7 @@ void CopyDirectory(const char* _src, const char* _dest, uint32_t parentID, BTHea
         strcat(dest, lastNode->token);
     }
     MakePath(dest);
-    printf("Created directory %s successfully!\n", dest);
+    printf("coping dir %s done\n", dest);
     copyInfo.dest = dest;
     PathListNode * childrenDirs = GetChildrenDirectoriesList(parentID, btreeHeader, fs, copyInfo);
     PathListNode * childrenDirsListHead = childrenDirs;

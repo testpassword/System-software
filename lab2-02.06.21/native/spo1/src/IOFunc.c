@@ -4,7 +4,7 @@
 
 bool isRoot = true;
 
-PathListNode* IterateDevices(FlexCommanderProbeInfo* info) {
+PathListNode* IterateDevices(ProbeInfo* info) {
     blkid_dev device;
     blkid_dev_iterate iterator = blkid_dev_iterate_begin(info->blkCache);
     const double gibibyteDivider = pow(2, 30);
@@ -51,7 +51,7 @@ int FlexFSeek(FILE *file, long int offset, int mode) {
     return 0;
 }
 
-int Init(FlexCommanderProbeInfo* info) {
+int Init(ProbeInfo* info) {
     int status = blkid_get_cache(&info->blkCache, NULL);
     if (status < 0) {
         fprintf(stderr, "Can't initialize blkid lib!\n");
