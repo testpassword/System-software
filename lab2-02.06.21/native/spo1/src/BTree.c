@@ -5,7 +5,6 @@
 #include <List.h>
 #include <HFSCatalog.h>
 #include "utils/Endians.h"
-#include "copy/Copy.h"
 #include "utils/BTreeUtils.h"
 
 uint32_t ParseLeafNode(char *rawNode, const char *folderName, uint32_t folderParentId, BTHeaderRec btreeHeader,
