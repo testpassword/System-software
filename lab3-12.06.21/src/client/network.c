@@ -13,7 +13,7 @@ int open_socket(int *client_socket) {
 }
 
 int connect_to_server(const int *client_socket, struct sockaddr_in *server_address) {
-    printf("Connection to server............................");
+    printf("Connection to serve............................");
     if (connect(*client_socket, (struct sockaddr *) server_address, sizeof(struct sockaddr_in)) == -1) {
         printf("faild\n");
         perror("Error: 'connect()'");
@@ -24,8 +24,8 @@ int connect_to_server(const int *client_socket, struct sockaddr_in *server_addre
 }
 
 int check_connect(const int *client_socket) {
-    struct _config_frame config_frame;
-    unpack(*client_socket, &config_frame);
+    struct Frame config_frame;
+    unpack_frame(*client_socket, &config_frame);
     if (!((config_frame.function == SERVER_FULL) && (config_frame.function_parameter == 0))) {
         close(*client_socket);
         return ERR_CLIENT_CONNECT_SERVER;
@@ -71,20 +71,20 @@ int connect_server(char *ip, long port, int *client_socket) {
 }
 
 void client_quit(const int *client_socket) {
-    struct _config_frame configFrame = {.function = CLIENT_QUIT, .function_parameter = 0};
-    pack(*client_socket, &configFrame);
+    struct Frame configFrame = {.function = CLIENT_QUIT, .function_parameter = 0};
+    pack_frame(*client_socket, &configFrame);
     printf("Close socket....................................");
     shutdown(*client_socket, SHUT_RDWR);
     close(*client_socket);
     printf("done\n");
 }
 
-void get_books_net(const int *client_socket, struct book ***books, int *lenght) {
-    struct _config_frame configFrame = {.function = GET_ALL_BOOK, .function_parameter = 0};
+void get_books_net(const int *client_socket, struct Book ***books, int *lenght) {
+    struct Frame configFrame = {.function = GET_ALL_BOOK, .function_parameter = 0};
     int old_lenght = *lenght;
     (*lenght) = 0;
-    pack(*client_socket, &configFrame);
-    struct _book_frame bf;
+    pack_frame(*client_socket, &configFrame);
+    struct BookFrame bf;
     while (true) {
         unpack_book(*client_socket, &bf);
         if (bf.function == SEND_BOOK_EOF) {
@@ -92,19 +92,19 @@ void get_books_net(const int *client_socket, struct book ***books, int *lenght) 
             break;
         } else {
             if ((*books)[(*lenght)] == NULL) {
-                (*books)[(*lenght)] = calloc(1, sizeof(struct book));
+                (*books)[(*lenght)] = calloc(1, sizeof(struct Book));
             }
-            memcpy((*books)[(*lenght)], &(bf.book), sizeof(struct book));
+            memcpy((*books)[(*lenght)], &(bf.book), sizeof(struct Book));
             (*lenght)++;
             if (old_lenght <= *lenght)
-                (*books) = realloc((*books), ((*lenght) + 1) * sizeof(struct book *));
+                (*books) = realloc((*books), ((*lenght) + 1) * sizeof(struct Book *));
         }
     }
 }
 
-void update_book(const int *client_socket, struct book *book) {
-    struct _config_frame configFrame = {.function = CLIENT_UPDATE_BOOK, .function_parameter = 0};
-    struct _book_frame bookFrame = {.function = CLIENT_UPDATE_BOOK, .book = *book};
-    pack(*client_socket, &configFrame);
+void update_book(const int *client_socket, struct Book *book) {
+    struct Frame configFrame = {.function = CLIENT_UPDATE_BOOK, .function_parameter = 0};
+    struct BookFrame bookFrame = {.function = CLIENT_UPDATE_BOOK, .book = *book};
+    pack_frame(*client_socket, &configFrame);
     pack_book(*client_socket, &bookFrame);
 }

@@ -1,9 +1,6 @@
 #ifndef SPO_LAB3_BOOK_H
 #define SPO_LAB3_BOOK_H
-
 #include "stdlib.h"
-
-#define MAX_BOOKS_AMOUNT 500
 #define MAX_BOOK_TITLE_LENGTH 256
 #define MAX_BOOK_AUTHORS_AMOUNT 32
 #define MAX_BOOK_ANNOTATION_LENGTH 512
@@ -11,7 +8,7 @@
 #define MAX_BOOK_TAGS_AMOUNT 16
 #define MAX_BOOK_TAG_LENGTH 32
 
-struct book {
+struct Book {
     size_t bookID;
     char title[MAX_BOOK_TITLE_LENGTH];
     char authors[MAX_BOOK_AUTHORS_AMOUNT * MAX_BOOK_AUTHOR_NAME_LENGTH];
@@ -20,9 +17,9 @@ struct book {
     char available;
 };
 
-struct book** generate_books(size_t lenght);
-void free_books(struct book **books, const int count_book);
-struct book** read_book();
-int get_lenght_book(struct book **books);
+struct Book** generate_books(size_t lenght);
+void burn_books(struct Book **books, const int count_book);
+struct Book** read_book();
+int count_books(struct Book **books);
 
-#endif //SPO_LAB3_BOOK_H
+#endif

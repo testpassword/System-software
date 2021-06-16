@@ -8,13 +8,15 @@
 #include <signal.h>
 #include <memory.h>
 #include "../../include/client/ui.h"
-#include "../../include/client/clientEvent.h"
-#include "../../include/common/protocol.h"
-#include "../../include/common/error.h"
+#include "../models/frames.h"
+#include "../errors.h"
+#include <stdbool.h>
+#include <stdlib.h>
+#include "../common/event.h"
 
 struct pthread_args_client {
     int connect_socket;
-    struct book **books;
+    struct Book **books;
     int *lenght;
     bool *connect;
     bool *needUpdate;
@@ -29,4 +31,25 @@ struct pthread_args_event {
 
 int client(char *ip, long port);
 
-#endif //SPO_LAB3_CLIENT_H
+#define CI_SIZE(s) (sizeof(s)/sizeof(command))
+#define KEY_UP_1 259
+#define KEY_DEL 127
+#define KEY_NL 10
+
+bool key_handle(int ch, size_t *args);
+bool cmd_symbol(size_t *args);
+bool cmd_KEY_UP(size_t *args);
+bool cmd_KEY_DOWN(size_t *args);
+bool cmd_KEY_F1(size_t *args);
+bool cmd_KEY_F2(size_t *args);
+bool cmd_KEY_F3(size_t *args);
+bool cmd_KEY_F4(size_t *args);
+bool cmd_KEY_F5(size_t *args);
+bool cmd_KEY_F6(size_t *args);
+bool cmd_KEY_F7(size_t *args);
+bool cmd_KEY_F8(size_t *args);
+bool cmd_KEY_F9(size_t *args);
+bool cmd_KEY_F10(size_t *args);
+bool cmd_KEY_MOUSE(size_t *args);
+
+#endif

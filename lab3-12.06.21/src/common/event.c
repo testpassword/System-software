@@ -2,11 +2,10 @@
 
 bool tryGetCmd(int ch, cmdFuncImpl *result, command *commandList, size_t commandListSize) {
     *result = NULL;
-    if(commandListSize > 1)
+    if (commandListSize > 1)
         for (size_t i = 1; *result == NULL && i < commandListSize; i++) {
             command cmd = commandList[i];
-            if (ch == cmd.ch)
-                *result = cmd.func;
+            if (ch == cmd.ch) *result = cmd.func;
         }
     return *result != NULL;
 }

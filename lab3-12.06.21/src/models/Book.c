@@ -1,10 +1,10 @@
 #include <stdio.h>
-#include "../../include/common/book.h"
+#include "../../include/models/Book.h"
 
-struct book** generate_books(size_t lenght) {
-    struct book **books = calloc(lenght+1, sizeof(struct book *));
+struct Book** generate_books(size_t lenght) {
+    struct Book** books = calloc(lenght + 1, sizeof(struct Book*));
     for (size_t i = 0; i < lenght; i++) {
-        books[i] = calloc(1, sizeof(struct book));
+        books[i] = calloc(1, sizeof(struct Book));
         books[i]->bookID = i;
         books[i]->available = 10;
         snprintf(books[i]->title, MAX_BOOK_TITLE_LENGTH, "Book%zu", i);
@@ -16,15 +16,11 @@ struct book** generate_books(size_t lenght) {
     return books;
 }
 
-int get_lenght_book(struct book **books) {
-    for (int i = 0; ; i++)
-        if (books[i] == NULL) return i+1;
-}
+int count_books(struct Book **books) { for (int i = 0; ; i++) if (books[i] == NULL) return i + 1; }
 
-void free_books(struct book **books, const int count_book) {
-    for (int i = 0; i < count_book; i++)
-        if (books[i]) free(books[i]);
+void burn_books(struct Book **books, const int count_book) {
+    for (int i = 0; i < count_book; i++) if (books[i]) free(books[i]);
     free(books);
 }
 
-struct book** read_book() { return generate_books(15); }
+struct Book** read_book() { return generate_books(15); }

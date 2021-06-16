@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="mortem"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/comp1/CLionProjects/System-software/lab3-12.06.21"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/comp1/CLionProjects/System-software/lab3-12.06.21"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/comp1/CLionProjects/System-software/lab3-12.06.21"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="mortem">
+				<Option output="/home/comp1/CLionProjects/System-software/lab3-12.06.21/mortem" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/comp1/CLionProjects/System-software/lab3-12.06.21"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 mortem"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="mortem/fast">
+				<Option output="/home/comp1/CLionProjects/System-software/lab3-12.06.21/mortem" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/comp1/CLionProjects/System-software/lab3-12.06.21"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 mortem/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/comp1/CLionProjects/System-software/lab3-12.06.21/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/client/client.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/client/clientEvent.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/client/network.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/client/ui.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/common/Book.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/common/event.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/common/frame.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/common/utils.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/server/server.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/server/serverEvent.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/src/shell.c">
+			<Option target="mortem"/>
+		</Unit>
+		<Unit filename="/home/comp1/CLionProjects/System-software/lab3-12.06.21/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

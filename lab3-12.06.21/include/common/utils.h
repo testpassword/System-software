@@ -9,6 +9,4 @@ char *trim(char *str);
 char *trim1(char *str, const char *sep);
 int seek_substring_KMP(char *source, char *find);
 
-bool isValidIpAddress(char *ipAddress);
-
-#endif //SPO_LAB3_UTILS_H
+#endif

@@ -147,12 +147,12 @@ void closeUI(struct console *cons) {
     endwin();
 }
 
-void printBookList(struct console *cons, struct book **books, int lenght, int selectedPage, int selectedBook) {
+void printBookList(struct console *cons, struct Book **books, int lenght, int selectedPage, int selectedBook) {
     wclear(cons->textArea.mainWindow.bookListW);
     for (int i = 0; i < cons->textArea.mainWindow.bookWLines; i++) {
         int index = cons->textArea.mainWindow.bookWLines * selectedPage + i;
         if (index >= lenght) { break; }
-        struct book *bk = books[index];
+        struct Book *bk = books[index];
         if (bk == NULL) continue;
         char *m = calloc(cons->textArea.mainWindow.bookNameLenght+1, sizeof(char));
         memcpy(m, bk->title, cons->textArea.mainWindow.bookNameLenght);
@@ -162,7 +162,7 @@ void printBookList(struct console *cons, struct book **books, int lenght, int se
     }
 }
 
-void printBookInfo(struct console *cons, struct book *book) {
+void printBookInfo(struct console *cons, struct Book *book) {
     wclear(cons->textArea.mainWindow.bookInfoW);
     wprintw(cons->textArea.mainWindow.bookInfoW, "Title: %s\n", book->title);
     wprintw(cons->textArea.mainWindow.bookInfoW, "Authors: %s\n", book->authors);
@@ -174,18 +174,18 @@ void printBookInfo(struct console *cons, struct book *book) {
 void printTopMenu(struct console *cons, const bool *open_edit_form) {
     wclear(cons->textArea.mainWindow.topButtonW);
     if(!(*open_edit_form)) {
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Get book ");
+        wprintw(cons->textArea.mainWindow.topButtonW, "[Get Book ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F1");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Return book ");
+        wprintw(cons->textArea.mainWindow.topButtonW, "[Return Book ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F2");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "] ");
 
-//        wprintw(cons->textArea.mainWindow.topButtonW, "[Add new book ");
+//        wprintw(cons->textArea.mainWindow.topButtonW, "[Add new Book ");
 //        wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
 //        wprintw(cons->textArea.mainWindow.topButtonW, "F3");
 //        wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
@@ -281,14 +281,14 @@ void printBottonMenu(struct console *cons, const bool *checkboxFilter, const boo
     }
 }
 
-void printSelectedBook(struct console *cons, struct book **books, int selectBook, const int *editField) {
-    struct book *bk = books[selectBook];
+void printSelectedBook(struct console *cons, struct Book **books, int selectBook, const int *editField) {
+    struct Book *bk = books[selectBook];
     if (*editField == EDIT_BOX_NONE) printBookInfo(cons, bk);
 }
 
 void update(size_t *args) {
     struct console *cons = (struct console *) args[0];
-    struct book **books= (struct book **) args[1];
+    struct Book **books= (struct Book **) args[1];
     int selectedPage = *((int *)args[2]);
     int selectedBook = *((int *)args[3]);
     int count_book = *((int *)args[4]);

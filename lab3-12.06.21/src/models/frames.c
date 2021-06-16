@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
-#include "../../include/common/protocol.h"
-#include "../../include/common/error.h"
+#include "../../include/models/frames.h"
+#include "../../include/errors.h"
 
-int pack(int socket, struct _config_frame *frame){
+int pack_frame(int socket, struct Frame *frame){
     unsigned char frame_array[2];
     frame_array[0] = frame->function;
     frame_array[1] = frame->function_parameter;
@@ -16,11 +16,11 @@ int pack(int socket, struct _config_frame *frame){
     return 0;
 }
 
-int unpack(int socket, struct _config_frame *frame) {
+int unpack_frame(int socket, struct Frame *frame) {
     unsigned char frame_array[2];
     long err = read(socket, frame_array, 2);
-    if(err == -1) {
-        fprintf(stderr, "Error read in unpack");
+    if (err == -1) {
+        fprintf(stderr, "Error read in unpack_frame");
         exit(1);
     }
     frame->function = frame_array[0];
@@ -41,7 +41,7 @@ int unpack(int socket, struct _config_frame *frame) {
 //            }
 //            break;
 //        case GET_ALL_BOOK:
-//            printf(">>>Get All book\n");
+//            printf(">>>Get All Book\n");
 //            break;
 //        case SEND_BOOK_EOF:
 //            printf("Book EOF\n");
@@ -59,17 +59,17 @@ int unpack(int socket, struct _config_frame *frame) {
     return 0;
 }
 
-int pack_book(int socket, struct _book_frame *frame) {
-    if(send(socket, frame, sizeof(struct _book_frame), 0) == -1) {
+int pack_book(int socket, struct BookFrame *frame) {
+    if (send(socket, frame, sizeof(struct BookFrame), 0) == -1) {
         perror("\nError: 'send message'");
         return ERR_SERVER_SEND_BOOK;
     }
     return 0;
 }
 
-int unpack_book(int socket, struct _book_frame *frame) {
-    if(read(socket, frame, sizeof(struct _book_frame)) < 1) {
-        fprintf(stderr, "Error read in unpack");
+int unpack_book(int socket, struct BookFrame *frame) {
+    if (read(socket, frame, sizeof(struct BookFrame)) < 1) {
+        fprintf(stderr, "Error read in unpack_frame");
         exit(1);
     }
     return 0;

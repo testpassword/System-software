@@ -33,7 +33,7 @@ int seek_substring_KMP(char *source, char *find) {
     size_t M = strlen(find);
     int succ = 0;
     for (int i = 0; i < N; i++) {
-        for (int j = 0; j < M; j++) {
+        for (int j = 0; j < M; j++)
             if (source[i] == find[j]) {
                 succ = 1;
                 i++;
@@ -42,13 +42,7 @@ int seek_substring_KMP(char *source, char *find) {
                 i += j - 1;
                 break;
             }
-        }
         if(succ) return succ;
     }
     return -1;
-}
-
-bool isValidIpAddress(char *ipAddress) {
-    struct sockaddr_in sa;
-    return inet_pton(AF_INET, ipAddress, &(sa.sin_addr)) != 0;
 }

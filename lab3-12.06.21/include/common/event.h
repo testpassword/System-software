@@ -13,24 +13,7 @@ typedef struct {
     cmdFuncImpl func;
 } command;
 
-/**
- *
- * @param ch
- * @param result -
- * @param commandList - store command operation. First element - default!
- * @param commandListSize - size of commandList with deafult element
- * @return
- */
 bool tryGetCmd(int ch, cmdFuncImpl *result, command *commandList, size_t commandListSize);
-
-/**
- *
- * @param ch
- * @param args
- * @param commandList
- * @param commandListSize
- * @return
- */
 bool event(int ch, size_t *args, command *commandList, size_t commandListSize);
 
-#endif //SPO_LAB3_EVENT_H
+#endif

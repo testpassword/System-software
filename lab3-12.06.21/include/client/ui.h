@@ -3,7 +3,7 @@
 
 #include <curses.h>
 #include <form.h>
-#include "../common/book.h"
+#include "../models/Book.h"
 
 #define CHECKBOX_FILTER_BY_TITLE 0
 #define CHECKBOX_FILTER_BY_AUTHOR 1
@@ -64,8 +64,8 @@ int initUI(struct console *cons);
 void closeUI(struct console *cons);
 //void refreshMainWindow(struct console *cons);
 
-//void printBookInfo(struct console *cons, struct book *book);
-//void printBookList(struct console *cons, struct book **books, int lenght, int selectedPage, int selectedBook);
+//void printBookInfo(struct console *cons, struct Book *Book);
+//void printBookList(struct console *cons, struct Book **books, int lenght, int selectedPage, int selectedBook);
 //void printTopMenu(struct console *cons);
 //void printBottonMenu(struct console *cons, const bool *checkboxFilter);
 void update(size_t *args);
