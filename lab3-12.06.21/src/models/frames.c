@@ -25,37 +25,6 @@ int unpack_frame(int socket, struct Frame *frame) {
     }
     frame->function = frame_array[0];
     frame->function_parameter = frame_array[1];
-
-//    switch (frame->function) {
-//        case SERVER_FULL:
-//            switch (frame->function_parameter) {
-//                case 0:
-//                    printf("Connection is established\n");
-//                    break;
-//                case 1:
-//                    printf("Connection error: 'Server is full'\n");
-//                    printf("Please retry later\n");
-//                    break;
-//                default:
-//                    printf("Uknown function\n");
-//            }
-//            break;
-//        case GET_ALL_BOOK:
-//            printf(">>>Get All Book\n");
-//            break;
-//        case SEND_BOOK_EOF:
-//            printf("Book EOF\n");
-//            break;
-//        case SEND_BOOK:
-//            printf("Send Book\n");
-//            break;
-//        case CLIENT_QUIT:
-//            printf("Client Quit\n");
-//            break;
-//        default:
-//            printf("Error: 'Unknown function %d'\n", frame->function);
-//            break;
-//    }
     return 0;
 }
 

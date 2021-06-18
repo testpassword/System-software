@@ -130,17 +130,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named spo_lab3
+# Target rules for targets named mortem
 
 # Build rule for target.
-spo_lab3: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 spo_lab3
-.PHONY : spo_lab3
+mortem: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 mortem
+.PHONY : mortem
 
 # fast build rule for target.
-spo_lab3/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/build
-.PHONY : spo_lab3/fast
+mortem/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/build
+.PHONY : mortem/fast
 
 src/client/client.o: src/client/client.c.o
 
@@ -148,7 +148,7 @@ src/client/client.o: src/client/client.c.o
 
 # target to build an object file
 src/client/client.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/client.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/client.c.o
 .PHONY : src/client/client.c.o
 
 src/client/client.i: src/client/client.c.i
@@ -157,7 +157,7 @@ src/client/client.i: src/client/client.c.i
 
 # target to preprocess a source file
 src/client/client.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/client.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/client.c.i
 .PHONY : src/client/client.c.i
 
 src/client/client.s: src/client/client.c.s
@@ -166,35 +166,8 @@ src/client/client.s: src/client/client.c.s
 
 # target to generate assembly for a file
 src/client/client.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/client.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/client.c.s
 .PHONY : src/client/client.c.s
-
-src/client/clientEvent.o: src/client/clientEvent.c.o
-
-.PHONY : src/client/clientEvent.o
-
-# target to build an object file
-src/client/clientEvent.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/clientEvent.c.o
-.PHONY : src/client/clientEvent.c.o
-
-src/client/clientEvent.i: src/client/clientEvent.c.i
-
-.PHONY : src/client/clientEvent.i
-
-# target to preprocess a source file
-src/client/clientEvent.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/clientEvent.c.i
-.PHONY : src/client/clientEvent.c.i
-
-src/client/clientEvent.s: src/client/clientEvent.c.s
-
-.PHONY : src/client/clientEvent.s
-
-# target to generate assembly for a file
-src/client/clientEvent.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/clientEvent.c.s
-.PHONY : src/client/clientEvent.c.s
 
 src/client/network.o: src/client/network.c.o
 
@@ -202,7 +175,7 @@ src/client/network.o: src/client/network.c.o
 
 # target to build an object file
 src/client/network.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/network.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/network.c.o
 .PHONY : src/client/network.c.o
 
 src/client/network.i: src/client/network.c.i
@@ -211,7 +184,7 @@ src/client/network.i: src/client/network.c.i
 
 # target to preprocess a source file
 src/client/network.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/network.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/network.c.i
 .PHONY : src/client/network.c.i
 
 src/client/network.s: src/client/network.c.s
@@ -220,7 +193,7 @@ src/client/network.s: src/client/network.c.s
 
 # target to generate assembly for a file
 src/client/network.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/network.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/network.c.s
 .PHONY : src/client/network.c.s
 
 src/client/ui.o: src/client/ui.c.o
@@ -229,7 +202,7 @@ src/client/ui.o: src/client/ui.c.o
 
 # target to build an object file
 src/client/ui.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/ui.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/ui.c.o
 .PHONY : src/client/ui.c.o
 
 src/client/ui.i: src/client/ui.c.i
@@ -238,7 +211,7 @@ src/client/ui.i: src/client/ui.c.i
 
 # target to preprocess a source file
 src/client/ui.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/ui.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/ui.c.i
 .PHONY : src/client/ui.c.i
 
 src/client/ui.s: src/client/ui.c.s
@@ -247,35 +220,8 @@ src/client/ui.s: src/client/ui.c.s
 
 # target to generate assembly for a file
 src/client/ui.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/client/ui.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/client/ui.c.s
 .PHONY : src/client/ui.c.s
-
-src/common/book.o: src/common/book.c.o
-
-.PHONY : src/common/book.o
-
-# target to build an object file
-src/common/book.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/book.c.o
-.PHONY : src/common/book.c.o
-
-src/common/book.i: src/common/book.c.i
-
-.PHONY : src/common/book.i
-
-# target to preprocess a source file
-src/common/book.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/book.c.i
-.PHONY : src/common/book.c.i
-
-src/common/book.s: src/common/book.c.s
-
-.PHONY : src/common/book.s
-
-# target to generate assembly for a file
-src/common/book.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/book.c.s
-.PHONY : src/common/book.c.s
 
 src/common/event.o: src/common/event.c.o
 
@@ -283,7 +229,7 @@ src/common/event.o: src/common/event.c.o
 
 # target to build an object file
 src/common/event.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/event.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/common/event.c.o
 .PHONY : src/common/event.c.o
 
 src/common/event.i: src/common/event.c.i
@@ -292,7 +238,7 @@ src/common/event.i: src/common/event.c.i
 
 # target to preprocess a source file
 src/common/event.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/event.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/common/event.c.i
 .PHONY : src/common/event.c.i
 
 src/common/event.s: src/common/event.c.s
@@ -301,35 +247,8 @@ src/common/event.s: src/common/event.c.s
 
 # target to generate assembly for a file
 src/common/event.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/event.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/common/event.c.s
 .PHONY : src/common/event.c.s
-
-src/common/protocol.o: src/common/protocol.c.o
-
-.PHONY : src/common/protocol.o
-
-# target to build an object file
-src/common/protocol.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/protocol.c.o
-.PHONY : src/common/protocol.c.o
-
-src/common/protocol.i: src/common/protocol.c.i
-
-.PHONY : src/common/protocol.i
-
-# target to preprocess a source file
-src/common/protocol.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/protocol.c.i
-.PHONY : src/common/protocol.c.i
-
-src/common/protocol.s: src/common/protocol.c.s
-
-.PHONY : src/common/protocol.s
-
-# target to generate assembly for a file
-src/common/protocol.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/protocol.c.s
-.PHONY : src/common/protocol.c.s
 
 src/common/utils.o: src/common/utils.c.o
 
@@ -337,7 +256,7 @@ src/common/utils.o: src/common/utils.c.o
 
 # target to build an object file
 src/common/utils.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/utils.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/common/utils.c.o
 .PHONY : src/common/utils.c.o
 
 src/common/utils.i: src/common/utils.c.i
@@ -346,7 +265,7 @@ src/common/utils.i: src/common/utils.c.i
 
 # target to preprocess a source file
 src/common/utils.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/utils.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/common/utils.c.i
 .PHONY : src/common/utils.c.i
 
 src/common/utils.s: src/common/utils.c.s
@@ -355,116 +274,116 @@ src/common/utils.s: src/common/utils.c.s
 
 # target to generate assembly for a file
 src/common/utils.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/common/utils.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/common/utils.c.s
 .PHONY : src/common/utils.c.s
 
-src/main.o: src/main.c.o
+src/models/Book.o: src/models/Book.c.o
 
-.PHONY : src/main.o
-
-# target to build an object file
-src/main.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/main.c.o
-.PHONY : src/main.c.o
-
-src/main.i: src/main.c.i
-
-.PHONY : src/main.i
-
-# target to preprocess a source file
-src/main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/main.c.i
-.PHONY : src/main.c.i
-
-src/main.s: src/main.c.s
-
-.PHONY : src/main.s
-
-# target to generate assembly for a file
-src/main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/main.c.s
-.PHONY : src/main.c.s
-
-src/server/network.o: src/server/network.c.o
-
-.PHONY : src/server/network.o
+.PHONY : src/models/Book.o
 
 # target to build an object file
-src/server/network.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/network.c.o
-.PHONY : src/server/network.c.o
+src/models/Book.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/models/Book.c.o
+.PHONY : src/models/Book.c.o
 
-src/server/network.i: src/server/network.c.i
+src/models/Book.i: src/models/Book.c.i
 
-.PHONY : src/server/network.i
+.PHONY : src/models/Book.i
 
 # target to preprocess a source file
-src/server/network.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/network.c.i
-.PHONY : src/server/network.c.i
+src/models/Book.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/models/Book.c.i
+.PHONY : src/models/Book.c.i
 
-src/server/network.s: src/server/network.c.s
+src/models/Book.s: src/models/Book.c.s
 
-.PHONY : src/server/network.s
+.PHONY : src/models/Book.s
 
 # target to generate assembly for a file
-src/server/network.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/network.c.s
-.PHONY : src/server/network.c.s
+src/models/Book.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/models/Book.c.s
+.PHONY : src/models/Book.c.s
 
-src/server/server.o: src/server/server.c.o
+src/models/frames.o: src/models/frames.c.o
 
-.PHONY : src/server/server.o
+.PHONY : src/models/frames.o
 
 # target to build an object file
-src/server/server.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/server.c.o
-.PHONY : src/server/server.c.o
+src/models/frames.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/models/frames.c.o
+.PHONY : src/models/frames.c.o
 
-src/server/server.i: src/server/server.c.i
+src/models/frames.i: src/models/frames.c.i
 
-.PHONY : src/server/server.i
+.PHONY : src/models/frames.i
 
 # target to preprocess a source file
-src/server/server.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/server.c.i
-.PHONY : src/server/server.c.i
+src/models/frames.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/models/frames.c.i
+.PHONY : src/models/frames.c.i
 
-src/server/server.s: src/server/server.c.s
+src/models/frames.s: src/models/frames.c.s
 
-.PHONY : src/server/server.s
+.PHONY : src/models/frames.s
 
 # target to generate assembly for a file
-src/server/server.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/server.c.s
-.PHONY : src/server/server.c.s
+src/models/frames.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/models/frames.c.s
+.PHONY : src/models/frames.c.s
 
-src/server/serverEvent.o: src/server/serverEvent.c.o
+src/server.o: src/server.c.o
 
-.PHONY : src/server/serverEvent.o
+.PHONY : src/server.o
 
 # target to build an object file
-src/server/serverEvent.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/serverEvent.c.o
-.PHONY : src/server/serverEvent.c.o
+src/server.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/server.c.o
+.PHONY : src/server.c.o
 
-src/server/serverEvent.i: src/server/serverEvent.c.i
+src/server.i: src/server.c.i
 
-.PHONY : src/server/serverEvent.i
+.PHONY : src/server.i
 
 # target to preprocess a source file
-src/server/serverEvent.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/serverEvent.c.i
-.PHONY : src/server/serverEvent.c.i
+src/server.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/server.c.i
+.PHONY : src/server.c.i
 
-src/server/serverEvent.s: src/server/serverEvent.c.s
+src/server.s: src/server.c.s
 
-.PHONY : src/server/serverEvent.s
+.PHONY : src/server.s
 
 # target to generate assembly for a file
-src/server/serverEvent.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spo_lab3.dir/build.make CMakeFiles/spo_lab3.dir/src/server/serverEvent.c.s
-.PHONY : src/server/serverEvent.c.s
+src/server.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/server.c.s
+.PHONY : src/server.c.s
+
+src/shell.o: src/shell.c.o
+
+.PHONY : src/shell.o
+
+# target to build an object file
+src/shell.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/shell.c.o
+.PHONY : src/shell.c.o
+
+src/shell.i: src/shell.c.i
+
+.PHONY : src/shell.i
+
+# target to preprocess a source file
+src/shell.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/shell.c.i
+.PHONY : src/shell.c.i
+
+src/shell.s: src/shell.c.s
+
+.PHONY : src/shell.s
+
+# target to generate assembly for a file
+src/shell.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mortem.dir/build.make CMakeFiles/mortem.dir/src/shell.c.s
+.PHONY : src/shell.c.s
 
 # Help Target
 help:
@@ -474,43 +393,34 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... spo_lab3"
+	@echo "... mortem"
 	@echo "... src/client/client.o"
 	@echo "... src/client/client.i"
 	@echo "... src/client/client.s"
-	@echo "... src/client/clientEvent.o"
-	@echo "... src/client/clientEvent.i"
-	@echo "... src/client/clientEvent.s"
 	@echo "... src/client/network.o"
 	@echo "... src/client/network.i"
 	@echo "... src/client/network.s"
 	@echo "... src/client/ui.o"
 	@echo "... src/client/ui.i"
 	@echo "... src/client/ui.s"
-	@echo "... src/common/book.o"
-	@echo "... src/common/book.i"
-	@echo "... src/common/book.s"
 	@echo "... src/common/event.o"
 	@echo "... src/common/event.i"
 	@echo "... src/common/event.s"
-	@echo "... src/common/protocol.o"
-	@echo "... src/common/protocol.i"
-	@echo "... src/common/protocol.s"
 	@echo "... src/common/utils.o"
 	@echo "... src/common/utils.i"
 	@echo "... src/common/utils.s"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
-	@echo "... src/server/network.o"
-	@echo "... src/server/network.i"
-	@echo "... src/server/network.s"
-	@echo "... src/server/server.o"
-	@echo "... src/server/server.i"
-	@echo "... src/server/server.s"
-	@echo "... src/server/serverEvent.o"
-	@echo "... src/server/serverEvent.i"
-	@echo "... src/server/serverEvent.s"
+	@echo "... src/models/Book.o"
+	@echo "... src/models/Book.i"
+	@echo "... src/models/Book.s"
+	@echo "... src/models/frames.o"
+	@echo "... src/models/frames.i"
+	@echo "... src/models/frames.s"
+	@echo "... src/server.o"
+	@echo "... src/server.i"
+	@echo "... src/server.s"
+	@echo "... src/shell.o"
+	@echo "... src/shell.i"
+	@echo "... src/shell.s"
 .PHONY : help
 
 

@@ -1,9 +1,8 @@
 #include <pthread.h>
 #include "../../include/client/client.h"
-#include "../../include/client/network.h"
 #include <curses.h>
 #include <string.h>
-#include "../../include/client/ui.h"
+#include "../../include/client/view.h"
 #include "../../include/common/utils.h"
 
 int client_socket;
@@ -22,7 +21,7 @@ void *eventUpdate(void *args) {
 }
 
 int ui_work(struct Book **books, int *count_book, bool *work, bool *needUpdate) {
-    struct console console;
+    struct InputArea console;
     if (initUI(&console)) return ERR_CLIENT_TERMINAL_ERRPR;
     int selectedBook = 0;
     int selectedPage = 0;
@@ -73,7 +72,7 @@ void *threadUpdateBook(void *args) {
         if (configFrame.function == SEND_UPDATE_INFO) {
             get_books_net(&(arg->connect_socket), &(arg->books), arg->lenght);
             *(arg->needUpdate) = true;
-        } else if(configFrame.function == SERVER_QUIT) *(arg->connect) = false;
+        } else if (configFrame.function == SERVER_QUIT) *(arg->connect) = false;
     }
     return NULL;
 }
@@ -82,29 +81,29 @@ int client(char *ip, long port) {
     signal(SIGINT, interrupt_close_client);
     int errno = connect_server(ip, port, &client_socket);
     if (errno > 0) return errno;
-    int lenght = 0;
+    int length = 0;
     struct Book **books = calloc(1, sizeof(struct Book *));
-    get_books_net(&client_socket, &books, &lenght);
+    get_books_net(&client_socket, &books, &length);
     bool work = true;
     bool needUpdate = true;
     pthread_t threadUpdate;
     struct pthread_args_client args = {
             .connect_socket = client_socket,
             .books = books,
-            .lenght = &lenght,
+            .lenght = &length,
             .connect = &work,
             .needUpdate = &needUpdate
     };
     pthread_create(&threadUpdate, NULL, threadUpdateBook, &args);
-    errno = ui_work(books, &lenght, &work, &needUpdate);
+    errno = ui_work(books, &length, &work, &needUpdate);
     if(errno != SUCCESS) return errno;
     client_quit(&client_socket);
-    burn_books(books, lenght);
+    burn_books(books, length);
     return SUCCESS;
 }
 
 void searchText(size_t *args) {
-    struct console *cons = (struct console *) args[0];
+    struct InputArea *cons = (struct InputArea *) args[0];
     struct Book **books = (struct Book **) args[1];
     int *selectedPage = ((int *) args[2]);
     int *selectedBook = ((int *) args[3]);
@@ -115,10 +114,10 @@ void searchText(size_t *args) {
     char *field_buffer_value = trim(field_buffer(cons->forms.search.fields[0], 0));
     for (int i = 0; i < *lenghBook; i++) {
         struct Book *book = books[i];
-        int t1 = checkbox[CHECKBOX_FILTER_BY_TITLE] ? seek_substring_KMP(book->title, field_buffer_value) : -1;
-        int t2 = checkbox[CHECKBOX_FILTER_BY_TAG] ? seek_substring_KMP(book->tags, field_buffer_value) : -1;
-        int a1 = checkbox[CHECKBOX_FILTER_BY_AUTHOR] ? seek_substring_KMP(book->authors, field_buffer_value) : -1;
-        int a2 = checkbox[CHECKBOX_FILTER_BY_ANNOTATION] ? seek_substring_KMP(book->annotation, field_buffer_value) : -1;
+        int t1 = checkbox[CHECKBOX_FILTER_BY_TITLE] ? includes(book->title, field_buffer_value) : -1;
+        int t2 = checkbox[CHECKBOX_FILTER_BY_TAG] ? includes(book->tags, field_buffer_value) : -1;
+        int a1 = checkbox[CHECKBOX_FILTER_BY_AUTHOR] ? includes(book->authors, field_buffer_value) : -1;
+        int a2 = checkbox[CHECKBOX_FILTER_BY_ANNOTATION] ? includes(book->annotation, field_buffer_value) : -1;
         if (t1 == -1 && t2 == -1 && a1 == -1 && a2 == -1) continue;
         else {
             if (i >= cons->textArea.mainWindow.bookWLines) *selectedPage = i / cons->textArea.mainWindow.bookWLines;
@@ -129,7 +128,7 @@ void searchText(size_t *args) {
 }
 
 bool cmd_symbol(size_t *args) {
-    struct console *cons = (struct console *) args[0];
+    struct InputArea *cons = (struct InputArea *) args[0];
     bool *open_edit_from = (bool *) args[5];
     int *ch = (int *) args[7];
     int *editField = (int *) args[8];
@@ -172,7 +171,7 @@ bool cmd_KEY_MOUSE(size_t *args) {
 bool cmd_KEY_UP(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!(*open_edit_form)) {
-        struct console *cons = (struct console *) args[0];
+        struct InputArea *cons = (struct InputArea *) args[0];
         int lenghtArea = cons->textArea.mainWindow.bookWLines;
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
@@ -193,7 +192,7 @@ bool cmd_KEY_UP(size_t *args) {
 bool cmd_KEY_DOWN(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!(*open_edit_form)) {
-        struct console *cons = (struct console *) args[0];
+        struct InputArea *cons = (struct InputArea *) args[0];
         int lenghtArea = cons->textArea.mainWindow.bookWLines;
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
@@ -220,7 +219,7 @@ bool cmd_KEY_DOWN(size_t *args) {
 bool cmd_KEY_F1(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (*open_edit_form) {
-        struct console *cons = (struct console *) args[0];
+        struct InputArea *cons = (struct InputArea *) args[0];
         struct Book **books = (struct Book **) args[1];
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
@@ -247,7 +246,7 @@ bool cmd_KEY_F1(size_t *args) {
         *editField = EDIT_BOX_TITLE;
         set_field_buffer(cons->forms.edit.fields[0], 0, cur_book->title);
     } else {
-        struct console *cons = (struct console *) args[0];
+        struct InputArea *cons = (struct InputArea *) args[0];
         struct Book **books = (struct Book **) args[1];
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
@@ -264,7 +263,7 @@ bool cmd_KEY_F1(size_t *args) {
 bool cmd_KEY_F2(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (*open_edit_form) {
-        struct console *cons = (struct console *) args[0];
+        struct InputArea *cons = (struct InputArea *) args[0];
         struct Book **books = (struct Book **) args[1];
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
@@ -291,7 +290,7 @@ bool cmd_KEY_F2(size_t *args) {
         *editField = EDIT_BOX_AUTHOR;
         set_field_buffer(cons->forms.edit.fields[0], 0, cur_book->authors);
     } else {
-        struct console *cons = (struct console *) args[0];
+        struct InputArea *cons = (struct InputArea *) args[0];
         struct Book **books = (struct Book **) args[1];
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
@@ -308,7 +307,7 @@ bool cmd_KEY_F2(size_t *args) {
 bool cmd_KEY_F3(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (*open_edit_form) {
-        struct console *cons = (struct console *) args[0];
+        struct InputArea *cons = (struct InputArea *) args[0];
         struct Book **books = (struct Book **) args[1];
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
@@ -341,7 +340,7 @@ bool cmd_KEY_F3(size_t *args) {
 bool cmd_KEY_F4(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (*open_edit_form) {
-        struct console *cons = (struct console *) args[0];
+        struct InputArea *cons = (struct InputArea *) args[0];
         struct Book **books = (struct Book **) args[1];
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
@@ -372,7 +371,7 @@ bool cmd_KEY_F4(size_t *args) {
 }
 
 bool cmd_KEY_F5(size_t *args) {
-    struct console *cons = (struct console *) args[0];
+    struct InputArea *cons = (struct InputArea *) args[0];
     bool *open_edit_form = (bool *) args[5];
     *open_edit_form = !(*open_edit_form);
     if (*open_edit_form) {
@@ -472,3 +471,90 @@ command knownCommands[] = {
 };
 
 bool key_handle(int ch, size_t *args) { return event(ch, args, knownCommands, CI_SIZE(knownCommands)); }
+
+int open_socket(int *client_socket) {
+    printf("Open socket.....................................");
+    *client_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (*client_socket < 0) {
+        printf("faild\n");
+        perror("Error: 'socket()'");
+        return ERR_CLIENT_OPEN_SOCKET;
+    }
+    printf("done\n");
+    return SUCCESS;
+}
+
+int connect_to_server(const int *client_socket, struct sockaddr_in *server_address) {
+    printf("Connection to serve............................");
+    if (connect(*client_socket, (struct sockaddr *) server_address, sizeof(struct sockaddr_in)) == -1) {
+        printf("faild\n");
+        perror("Error: 'connect()'");
+        return ERR_CLIENT_CONNECT;
+    }
+    printf("done\n");
+    return SUCCESS;
+}
+
+int check_connect(const int *client_socket) {
+    struct Frame config_frame;
+    unpack_frame(*client_socket, &config_frame);
+    if (!((config_frame.function == SERVER_FULL) && (config_frame.function_parameter == 0))) {
+        close(*client_socket);
+        return ERR_CLIENT_CONNECT_SERVER;
+    }
+    return SUCCESS;
+}
+
+int connect_server(char *ip, long port, int *client_socket) {
+    int err = SUCCESS;
+    err = open_socket(client_socket);
+    if (err != SUCCESS) return err;
+    struct sockaddr_in server_address = {.sin_family = AF_INET, .sin_port = htons(port)};
+    struct in_addr serv_address;
+    if (inet_aton(ip, &serv_address) != 0) server_address.sin_addr = serv_address;
+    else server_address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    err = connect_to_server(client_socket, &server_address);
+    if (err != SUCCESS) return err;
+    err = check_connect(client_socket);
+    if (err != SUCCESS) return err;
+    return SUCCESS;
+}
+
+void client_quit(const int *client_socket) {
+    struct Frame configFrame = {.function = CLIENT_QUIT, .function_parameter = 0};
+    pack_frame(*client_socket, &configFrame);
+    printf("Close socket....................................");
+    shutdown(*client_socket, SHUT_RDWR);
+    close(*client_socket);
+    printf("done\n");
+}
+
+void get_books_net(const int *client_socket, struct Book ***books, int *lenght) {
+    struct Frame configFrame = {.function = GET_ALL_BOOK, .function_parameter = 0};
+    int old_lenght = *lenght;
+    (*lenght) = 0;
+    pack_frame(*client_socket, &configFrame);
+    struct BookFrame bf;
+    while (true) {
+        unpack_book(*client_socket, &bf);
+        if (bf.function == SEND_BOOK_EOF) {
+            (*books)[(*lenght)] = NULL;
+            break;
+        } else {
+            if ((*books)[(*lenght)] == NULL) {
+                (*books)[(*lenght)] = calloc(1, sizeof(struct Book));
+            }
+            memcpy((*books)[(*lenght)], &(bf.book), sizeof(struct Book));
+            (*lenght)++;
+            if (old_lenght <= *lenght)
+                (*books) = realloc((*books), ((*lenght) + 1) * sizeof(struct Book *));
+        }
+    }
+}
+
+void update_book(const int *client_socket, struct Book *book) {
+    struct Frame configFrame = {.function = CLIENT_UPDATE_BOOK, .function_parameter = 0};
+    struct BookFrame bookFrame = {.function = CLIENT_UPDATE_BOOK, .book = *book};
+    pack_frame(*client_socket, &configFrame);
+    pack_book(*client_socket, &bookFrame);
+}

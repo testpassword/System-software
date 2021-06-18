@@ -1,5 +1,5 @@
 #include <string.h>
-#include "../../include/client/ui.h"
+#include "../../include/client/view.h"
 
 int init_curses() {
     if (!initscr()) {
@@ -12,12 +12,12 @@ int init_curses() {
     return 0;
 }
 
-void borderBook(struct console *cons) {
+void borderBook(struct InputArea *cons) {
     wborder(cons->border.borderBookListW, '|', '|', '-', '-', '+', '+', '+', '+');
     wborder(cons->border.borderBookInfoW, '|', '|', '-', '-', '+', '+', '+', '+');
 }
 
-void initFormSearch(struct console *cons, int colsBookList) {
+void initFormSearch(struct InputArea *cons, int colsBookList) {
     cons->forms.search.window = derwin(cons->textArea.mainWindow.searchW, 1, colsBookList, 0, 0);
     cons->forms.search.fields = calloc(3, sizeof(FIELD *));
     cons->forms.search.fields[0] = new_field(1, colsBookList-2, 0, 2, 2, 0);
@@ -32,7 +32,7 @@ void initFormSearch(struct console *cons, int colsBookList) {
     post_form(cons->forms.search.form);
 }
 
-void initFormEdit(struct console *cons, int rowBookInfo, int colsBookInfo,int colsBookList) {
+void initFormEdit(struct InputArea *cons, int rowBookInfo, int colsBookInfo, int colsBookList) {
     cons->forms.edit.window = derwin(cons->textArea.editWindow.bookInfoW, rowBookInfo-2, colsBookInfo, 1, 1);
     cons->forms.edit.fields = calloc(2, sizeof(FIELD *));
     cons->forms.edit.fields[0] = new_field(5, colsBookInfo-4, 2, colsBookList+2, 5, 0);
@@ -44,7 +44,7 @@ void initFormEdit(struct console *cons, int rowBookInfo, int colsBookInfo,int co
     set_form_win(cons->forms.edit.form, cons->forms.edit.window);
 }
 
-int initUI(struct console *cons) {
+int initUI(struct InputArea *cons) {
     if (init_curses()) return 1;
     int colsBookList = COLS * 2 / 10;
     int colsBookInfo = COLS * 8 / 10;
@@ -62,28 +62,23 @@ int initUI(struct console *cons) {
     cons->textArea.editWindow.bookInfoW = cons->textArea.mainWindow.bookInfoW;
     cons->textArea.editWindow.topButtonW = cons->textArea.mainWindow.topButtonW;
     cons->textArea.editWindow.bottomButtonW = cons->textArea.mainWindow.bottomButtonW;
-
-//    immedok(cons->textArea.bookListW, TRUE);
-
     initFormSearch(cons, colsBookList);
     initFormEdit(cons, linesInBook, colsBookInfo, colsBookList);
     return 0;
 }
 
-void refreshBorder(struct console *cons) {
+void refreshBorder(struct InputArea *cons) {
     borderBook(cons);
     refresh();
     wrefresh(cons->border.borderBookListW);
     wrefresh(cons->border.borderBookInfoW);
 }
 
-void refreshEditWindow(struct console *cons) {
+void refreshEditWindow(struct InputArea *cons) {
     wborder(cons->border.borderBookListW, '|', '|', '-', '-', '+', '+', '+', '+');
     wborder(cons->forms.edit.window, '|', '|', '-', '-', '+', '+', '+', '+');
     refresh();
     wrefresh(cons->border.borderBookListW);
-//    form_driver(cons->forms.edit.form, REQ_NEXT_FIELD);
-//    form_driver(cons->forms.edit.form, REQ_PREV_FIELD);
     wrefresh(cons->forms.edit.window);
     wrefresh(cons->textArea.mainWindow.bookInfoW);
     wrefresh(cons->textArea.mainWindow.bookListW);
@@ -92,7 +87,7 @@ void refreshEditWindow(struct console *cons) {
     refresh();
 }
 
-void refreshMainWindow(struct console *cons){
+void refreshMainWindow(struct InputArea *cons){
     refreshBorder(cons);
     wrefresh(cons->textArea.mainWindow.bookInfoW);
     wrefresh(cons->textArea.mainWindow.bookListW);
@@ -103,7 +98,7 @@ void refreshMainWindow(struct console *cons){
     refresh();
 }
 
-void delWindowTextArea(struct textArea *textArea) {
+void delWindowTextArea(struct TextArea *textArea) {
     delwin(textArea->mainWindow.bookInfoW);
     delwin(textArea->mainWindow.bookListW);
     delwin(textArea->mainWindow.searchW);
@@ -111,19 +106,19 @@ void delWindowTextArea(struct textArea *textArea) {
     delwin(textArea->mainWindow.bottomButtonW);
 }
 
-void delWindowBoxArea(struct border *boxArea) {
+void delWindowBoxArea(struct Border *boxArea) {
     delwin(boxArea->borderBookInfoW);
     delwin(boxArea->borderBookListW);
 }
 
-void delFromEdit(struct form *search) {
+void delFromEdit(struct Form *search) {
     delwin(search->window);
     free_form(search->form);
     free_field(search->fields[0]);
     free(search->fields);
 }
 
-void delFromSearch(struct form *search) {
+void delFromSearch(struct Form *search) {
     delwin(search->window);
     free_form(search->form);
     free_field(search->fields[0]);
@@ -131,23 +126,23 @@ void delFromSearch(struct form *search) {
     free(search->fields);
 }
 
-void delFroms(struct forms *forms) {
+void delFroms(struct Bar *forms) {
     delFromSearch(&(forms->search));
     delFromEdit(&(forms->edit));
 }
 
-void delWindow(struct console *cons) {
+void delWindow(struct InputArea *cons) {
     delFroms(&(cons->forms));
     delWindowBoxArea(&(cons->border));
     delWindowTextArea(&(cons->textArea));
 }
 
-void closeUI(struct console *cons) {
+void closeUI(struct InputArea *cons) {
     delWindow(cons);
     endwin();
 }
 
-void printBookList(struct console *cons, struct Book **books, int lenght, int selectedPage, int selectedBook) {
+void printBookList(struct InputArea *cons, struct Book **books, int lenght, int selectedPage, int selectedBook) {
     wclear(cons->textArea.mainWindow.bookListW);
     for (int i = 0; i < cons->textArea.mainWindow.bookWLines; i++) {
         int index = cons->textArea.mainWindow.bookWLines * selectedPage + i;
@@ -162,7 +157,7 @@ void printBookList(struct console *cons, struct Book **books, int lenght, int se
     }
 }
 
-void printBookInfo(struct console *cons, struct Book *book) {
+void printBookInfo(struct InputArea *cons, struct Book *book) {
     wclear(cons->textArea.mainWindow.bookInfoW);
     wprintw(cons->textArea.mainWindow.bookInfoW, "Title: %s\n", book->title);
     wprintw(cons->textArea.mainWindow.bookInfoW, "Authors: %s\n", book->authors);
@@ -171,7 +166,7 @@ void printBookInfo(struct console *cons, struct Book *book) {
     wprintw(cons->textArea.mainWindow.bookInfoW, "Available: %d\n", book->available);
 }
 
-void printTopMenu(struct console *cons, const bool *open_edit_form) {
+void printTopMenu(struct InputArea *cons, const bool *open_edit_form) {
     wclear(cons->textArea.mainWindow.topButtonW);
     if(!(*open_edit_form)) {
         wprintw(cons->textArea.mainWindow.topButtonW, "[Get Book ");
@@ -184,13 +179,6 @@ void printTopMenu(struct console *cons, const bool *open_edit_form) {
         wprintw(cons->textArea.mainWindow.topButtonW, "F2");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-
-//        wprintw(cons->textArea.mainWindow.topButtonW, "[Add new Book ");
-//        wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-//        wprintw(cons->textArea.mainWindow.topButtonW, "F3");
-//        wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-//        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-
         wprintw(cons->textArea.mainWindow.topButtonW, "[To Edit Book ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F5");
@@ -231,7 +219,7 @@ void printTopMenu(struct console *cons, const bool *open_edit_form) {
     wprintw(cons->textArea.mainWindow.topButtonW, "]");
 }
 
-void printBottonMenu(struct console *cons, const bool *checkboxFilter, const bool *open_edit_form, const int *editField) {
+void printBottonMenu(struct InputArea *cons, const bool *checkboxFilter, const bool *open_edit_form, const int *editField) {
     wclear(cons->textArea.mainWindow.bottomButtonW);
     if(!(*open_edit_form)) {
         wprintw(cons->textArea.mainWindow.bottomButtonW, "Filter by ");
@@ -281,13 +269,13 @@ void printBottonMenu(struct console *cons, const bool *checkboxFilter, const boo
     }
 }
 
-void printSelectedBook(struct console *cons, struct Book **books, int selectBook, const int *editField) {
+void printSelectedBook(struct InputArea *cons, struct Book **books, int selectBook, const int *editField) {
     struct Book *bk = books[selectBook];
     if (*editField == EDIT_BOX_NONE) printBookInfo(cons, bk);
 }
 
 void update(size_t *args) {
-    struct console *cons = (struct console *) args[0];
+    struct InputArea *cons = (struct InputArea *) args[0];
     struct Book **books= (struct Book **) args[1];
     int selectedPage = *((int *)args[2]);
     int selectedBook = *((int *)args[3]);
@@ -299,7 +287,7 @@ void update(size_t *args) {
     printTopMenu(cons, open_edit_field);
     printBottonMenu(cons, checkboxFilter, open_edit_field, editField);
     printBookList(cons, books, count_book, selectedPage, selectedBook);
-    if(*open_edit_field) {
+    if (*open_edit_field) {
         printSelectedBook(cons, books, selectBook, editField);
         refreshEditWindow(cons);
     } else {
@@ -309,7 +297,7 @@ void update(size_t *args) {
 }
 
 void clearAllWindow(size_t *args) {
-    struct console *cons = (struct console *) args[0];
+    struct InputArea *cons = (struct InputArea *) args[0];
     wclear(cons->textArea.mainWindow.bookInfoW);
     wclear(cons->border.borderBookInfoW);
     wclear(cons->border.borderBookListW);

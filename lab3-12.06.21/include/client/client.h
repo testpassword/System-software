@@ -7,12 +7,13 @@
 #include <unistd.h>
 #include <signal.h>
 #include <memory.h>
-#include "../../include/client/ui.h"
+#include "../../include/client/view.h"
 #include "../models/frames.h"
 #include "../errors.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include "../common/event.h"
+#include <stdio.h>
 
 struct pthread_args_client {
     int connect_socket;
@@ -52,4 +53,8 @@ bool cmd_KEY_F9(size_t *args);
 bool cmd_KEY_F10(size_t *args);
 bool cmd_KEY_MOUSE(size_t *args);
 
+int connect_server(char *ip, long port, int *client_socket);
+void client_quit(const int *client_socket);
+void get_books_net(const int *client_socket, struct Book *** books, int *lenght);
+void update_book(const int *client_socket, struct Book *book);
 #endif

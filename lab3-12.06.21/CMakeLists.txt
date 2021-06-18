@@ -5,12 +5,11 @@ set(SOURCE_FILE
         src/shell.c
         src/client/client.c
         src/models/Book.c
-        src/client/ui.c
+        src/client/view.c
         src/common/utils.c
         src/server.c
         src/models/frames.c
         src/common/event.c
-        src/client/network.c
         )
 add_executable(mortem ${SOURCE_FILE})
 set(THREADS_PREFER_PTHREAD_FLAG ON)

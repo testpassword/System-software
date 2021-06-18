@@ -9,26 +9,25 @@
 #define CHECKBOX_FILTER_BY_AUTHOR 1
 #define CHECKBOX_FILTER_BY_ANNOTATION 2
 #define CHECKBOX_FILTER_BY_TAG 3
-
 #define EDIT_BOX_TITLE 0
 #define EDIT_BOX_AUTHOR 1
 #define EDIT_BOX_ANNOTATION 2
 #define EDIT_BOX_TAG 3
 #define EDIT_BOX_NONE -1
 
-struct border {
+struct Border {
     WINDOW *borderBookListW;
     WINDOW *borderBookInfoW;
 };
 
-struct editWindows {
+struct Editor {
     WINDOW *topButtonW;
     WINDOW *bookListW;
     WINDOW *bookInfoW;
     WINDOW *bottomButtonW;
 };
 
-struct mainWindow {
+struct BookList {
     WINDOW *searchW;
     WINDOW *topButtonW;
     WINDOW *bookListW;
@@ -38,37 +37,31 @@ struct mainWindow {
     int bookNameLenght;
 };
 
-struct textArea {
-    struct mainWindow mainWindow;
-    struct editWindows editWindow;
+struct TextArea {
+    struct BookList mainWindow;
+    struct Editor editWindow;
 };
 
-struct form {
+struct Form {
     WINDOW *window;
     FORM *form;
     FIELD **fields;
 };
 
-struct forms {
-    struct form search;
-    struct form edit;
+struct Bar {
+    struct Form search;
+    struct Form edit;
 };
 
-struct console {
-    struct border border;
-    struct textArea textArea;
-    struct forms forms;
+struct InputArea {
+    struct Border border;
+    struct TextArea textArea;
+    struct Bar forms;
 };
 
-int initUI(struct console *cons);
-void closeUI(struct console *cons);
-//void refreshMainWindow(struct console *cons);
-
-//void printBookInfo(struct console *cons, struct Book *Book);
-//void printBookList(struct console *cons, struct Book **books, int lenght, int selectedPage, int selectedBook);
-//void printTopMenu(struct console *cons);
-//void printBottonMenu(struct console *cons, const bool *checkboxFilter);
+int initUI(struct InputArea *cons);
+void closeUI(struct InputArea *cons);
 void update(size_t *args);
 void clearAllWindow(size_t *args);
 
-#endif //SPO_LAB3_UI_H
+#endif

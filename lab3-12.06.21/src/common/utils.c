@@ -28,21 +28,21 @@ char *trim(char *str) { return ltrim(rtrim(str, NULL), NULL); }
 
 char *trim1(char *str, const char *sep) { return ltrim(rtrim(str, sep), sep); }
 
-int seek_substring_KMP(char *source, char *find) {
+int includes(char *source, char *find) {
     size_t N = strlen(source);
     size_t M = strlen(find);
-    int succ = 0;
+    int isFound = 0;
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++)
             if (source[i] == find[j]) {
-                succ = 1;
+                isFound = 1;
                 i++;
             } else {
-                succ = 0;
+                isFound = 0;
                 i += j - 1;
                 break;
             }
-        if(succ) return succ;
+        if (isFound) return isFound;
     }
     return -1;
 }

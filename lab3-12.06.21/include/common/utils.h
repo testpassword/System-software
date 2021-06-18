@@ -7,6 +7,6 @@ char *ltrim(char *str, const char *sep);
 char *rtrim(char *str, const char *sep);
 char *trim(char *str);
 char *trim1(char *str, const char *sep);
-int seek_substring_KMP(char *source, char *find);
+int includes(char *source, char *find);
 
 #endif

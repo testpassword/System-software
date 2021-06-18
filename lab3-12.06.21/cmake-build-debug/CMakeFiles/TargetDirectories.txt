@@ -1,3 +1,3 @@
 /home/comp1/CLionProjects/System-software/lab3-12.06.21/cmake-build-debug/CMakeFiles/rebuild_cache.dir
 /home/comp1/CLionProjects/System-software/lab3-12.06.21/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/comp1/CLionProjects/System-software/lab3-12.06.21/cmake-build-debug/CMakeFiles/spo_lab3.dir
+/home/comp1/CLionProjects/System-software/lab3-12.06.21/cmake-build-debug/CMakeFiles/mortem.dir
