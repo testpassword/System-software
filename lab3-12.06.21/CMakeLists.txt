@@ -3,13 +3,13 @@ project(mortem VERSION 1.0 LANGUAGES C)
 set(CMAKE_C_STANDARD 11)
 set(SOURCE_FILE
         src/shell.c
-        src/client/client.c
+        src/controllers/client.c
         src/models/Book.c
-        src/client/view.c
-        src/common/utils.c
-        src/server.c
+        src/views/client_ui.c
+        src/str_extensions.c
+        src/controllers/server.c
         src/models/frames.c
-        src/common/event.c
+        src/models/Command.c
         )
 add_executable(mortem ${SOURCE_FILE})
 set(THREADS_PREFER_PTHREAD_FLAG ON)

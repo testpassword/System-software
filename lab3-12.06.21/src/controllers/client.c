@@ -1,9 +1,9 @@
 #include <pthread.h>
-#include "../../include/client/client.h"
+#include "../../include/controllers/client.h"
 #include <curses.h>
 #include <string.h>
-#include "../../include/client/view.h"
-#include "../../include/common/utils.h"
+#include "../../include/views/client_ui.h"
+#include "../../include/str_extensions.h"
 
 int client_socket;
 
@@ -162,13 +162,13 @@ bool cmd_symbol(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_MOUSE(size_t *args) {
+bool handle_KEY_MOUSE(size_t *args) {
     MEVENT event;
     if (getmouse(&event) == OK) {}
     return true;
 }
 
-bool cmd_KEY_UP(size_t *args) {
+bool handle_UP(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!(*open_edit_form)) {
         struct InputArea *cons = (struct InputArea *) args[0];
@@ -189,7 +189,7 @@ bool cmd_KEY_UP(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_DOWN(size_t *args) {
+bool handle_DOWN(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!(*open_edit_form)) {
         struct InputArea *cons = (struct InputArea *) args[0];
@@ -216,7 +216,7 @@ bool cmd_KEY_DOWN(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F1(size_t *args) {
+bool handle_F1(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (*open_edit_form) {
         struct InputArea *cons = (struct InputArea *) args[0];
@@ -260,7 +260,7 @@ bool cmd_KEY_F1(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F2(size_t *args) {
+bool handle_F2(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (*open_edit_form) {
         struct InputArea *cons = (struct InputArea *) args[0];
@@ -304,7 +304,7 @@ bool cmd_KEY_F2(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F3(size_t *args) {
+bool handle_F3(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (*open_edit_form) {
         struct InputArea *cons = (struct InputArea *) args[0];
@@ -337,7 +337,7 @@ bool cmd_KEY_F3(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F4(size_t *args) {
+bool handle_F4(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (*open_edit_form) {
         struct InputArea *cons = (struct InputArea *) args[0];
@@ -370,7 +370,7 @@ bool cmd_KEY_F4(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F5(size_t *args) {
+bool handle_F5(size_t *args) {
     struct InputArea *cons = (struct InputArea *) args[0];
     bool *open_edit_form = (bool *) args[5];
     *open_edit_form = !(*open_edit_form);
@@ -415,7 +415,7 @@ bool cmd_KEY_F5(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F6(size_t *args) {
+bool handle_F6(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!*open_edit_form) {
         bool *checkbox = (bool *) args[6];
@@ -424,7 +424,7 @@ bool cmd_KEY_F6(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F7(size_t *args) {
+bool handle_F7(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!*open_edit_form) {
         bool *checkbox = (bool *) args[6];
@@ -433,7 +433,7 @@ bool cmd_KEY_F7(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F8(size_t *args) {
+bool handle_F8(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!*open_edit_form) {
         bool *checkbox = (bool *) args[6];
@@ -442,7 +442,7 @@ bool cmd_KEY_F8(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F9(size_t *args) {
+bool handle_F9(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!*open_edit_form) {
         bool *checkbox = (bool *) args[6];
@@ -451,23 +451,23 @@ bool cmd_KEY_F9(size_t *args) {
     return true;
 }
 
-bool cmd_KEY_F10(size_t *args) { return false; }
+bool handle_F10(size_t *args) { return false; }
 
-command knownCommands[] = {
+Command knownCommands[] = {
         {DEFAULT_EVENT, &cmd_symbol},
-        {KEY_UP_1,      &cmd_KEY_UP},
-        {KEY_DOWN,      &cmd_KEY_DOWN},
-        {KEY_F(1),      &cmd_KEY_F1},
-        {KEY_F(2),      &cmd_KEY_F2},
-        {KEY_F(3),      &cmd_KEY_F3},
-        {KEY_F(4),      &cmd_KEY_F4},
-        {KEY_F(5),      &cmd_KEY_F5},
-        {KEY_F(6),      &cmd_KEY_F6},
-        {KEY_F(7),      &cmd_KEY_F7},
-        {KEY_F(8),      &cmd_KEY_F8},
-        {KEY_F(9),      &cmd_KEY_F9},
-        {KEY_F(10),     &cmd_KEY_F10},
-        {KEY_MOUSE,     &cmd_KEY_MOUSE},
+        {KEY_UP_1, &handle_UP},
+        {KEY_DOWN, &handle_DOWN},
+        {KEY_F(1), &handle_F1},
+        {KEY_F(2), &handle_F2},
+        {KEY_F(3), &handle_F3},
+        {KEY_F(4), &handle_F4},
+        {KEY_F(5), &handle_F5},
+        {KEY_F(6), &handle_F6},
+        {KEY_F(7), &handle_F7},
+        {KEY_F(8), &handle_F8},
+        {KEY_F(9), &handle_F9},
+        {KEY_F(10), &handle_F10},
+        {KEY_MOUSE, &handle_KEY_MOUSE},
 };
 
 bool key_handle(int ch, size_t *args) { return event(ch, args, knownCommands, CI_SIZE(knownCommands)); }

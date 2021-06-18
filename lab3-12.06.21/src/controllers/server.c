@@ -1,5 +1,5 @@
-#include "../include/server.h"
-#include "../include/errors.h"
+#include "../../include/controllers/server.h"
+#include "../../include/errors.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <memory.h>
@@ -225,7 +225,7 @@ bool com_client_update_book(size_t *args) {
     return true;
 }
 
-command knownCommandServer[] = {
+Command knownCommandServer[] = {
         {DEFAULT_EVENT,      &com_default},
         {GET_ALL_BOOK,       &com_get_all_book},
         {CLIENT_QUIT,        &com_client_quit},

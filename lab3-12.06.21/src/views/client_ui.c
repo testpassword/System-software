@@ -1,5 +1,5 @@
 #include <string.h>
-#include "../../include/client/view.h"
+#include "../../include/views/client_ui.h"
 
 int init_curses() {
     if (!initscr()) {
@@ -211,7 +211,6 @@ void printTopMenu(struct InputArea *cons, const bool *open_edit_form) {
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "] ");
     }
-
     wprintw(cons->textArea.mainWindow.topButtonW, "[Exit ");
     wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
     wprintw(cons->textArea.mainWindow.topButtonW, "F10");

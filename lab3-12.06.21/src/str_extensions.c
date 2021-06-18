@@ -1,10 +1,16 @@
 #include <string.h>
 #include <malloc.h>
-#include <arpa/inet.h>
-#include "../../include/common/utils.h"
+#include "../include/str_extensions.h"
+#include <stdarg.h>
 
-char *ltrim(char *str, const char *sep) {
-    if (sep == NULL) sep = "\t\n\v\f\r ";
+char* trim(char *str) {
+    const char* sep = "\t\n\v\f\r ";
+    size_t i = strlen(str) - 1;
+    while (i >= 0 && strchr(sep, str[i]) != NULL) {
+        str[i] = '\0';
+        i--;
+    }
+    sep = "\t\n\v\f\r ";
     size_t totrim = strspn(str, sep);
     if (totrim > 0) {
         size_t len = strlen(str);
@@ -13,20 +19,6 @@ char *ltrim(char *str, const char *sep) {
     }
     return str;
 }
-
-char *rtrim(char *str, const char *sep) {
-    if (sep == NULL) sep = "\t\n\v\f\r ";
-    size_t i = strlen(str) - 1;
-    while (i >= 0 && strchr(sep, str[i]) != NULL) {
-        str[i] = '\0';
-        i--;
-    }
-    return str;
-}
-
-char *trim(char *str) { return ltrim(rtrim(str, NULL), NULL); }
-
-char *trim1(char *str, const char *sep) { return ltrim(rtrim(str, sep), sep); }
 
 int includes(char *source, char *find) {
     size_t N = strlen(source);
@@ -45,4 +37,13 @@ int includes(char *source, char *find) {
         if (isFound) return isFound;
     }
     return -1;
+}
+
+int println(const char * format, ...) {
+    va_list ap;
+    va_start(ap, format);
+    int ret = vprintf(format, ap);
+    va_end(ap);
+    puts("");
+    return ret;
 }

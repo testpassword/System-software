@@ -1,9 +1,8 @@
 #include <string.h>
 #include <stdlib.h>
-#include "../include/client/client.h"
-#include "../include/server.h"
-#include "../include/common/utils.h"
-#include "../include/println.h"
+#include "../include/controllers/client.h"
+#include "../include/controllers/server.h"
+#include "../include/str_extensions.h"
 
 #define CONSUMER "--client"
 #define PRODUCER "--serve"

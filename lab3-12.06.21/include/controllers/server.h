@@ -12,12 +12,12 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <pthread.h>
-#include "models/frames.h"
-#include "errors.h"
-#include "models/Book.h"
-#include "common/event.h"
+#include "../models/frames.h"
+#include "../errors.h"
+#include "../models/Book.h"
+#include "../models/Command.h"
 
-#define CI_SIZE(s) (sizeof(s)/sizeof(command))
+#define CI_SIZE(s) (sizeof(s)/sizeof(Command))
 
 struct pthread_args {
     int connect_socket;
