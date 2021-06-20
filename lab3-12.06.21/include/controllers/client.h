@@ -1,14 +1,11 @@
-#ifndef SPO_LAB3_CLIENT_H
-#define SPO_LAB3_CLIENT_H
-
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <signal.h>
 #include <memory.h>
-#include "../views/client_ui.h"
-#include "../models/frames.h"
+#include "../views/ui_components.h"
+#include "../dtos/BookFrame.h"
 #include "../errors.h"
 #include <stdbool.h>
 #include <stdlib.h>
@@ -51,9 +48,6 @@ bool handle_F7(size_t *args);
 bool handle_F8(size_t *args);
 bool handle_F9(size_t *args);
 bool handle_F10(size_t *args);
-bool handle_KEY_MOUSE(size_t *args);
-int connect_server(char *ip, long port, int *client_socket);
-void client_quit(const int *client_socket);
-void get_books_net(const int *client_socket, struct Book *** books, int *lenght);
-void update_book(const int *client_socket, struct Book *book);
-#endif
+bool handle_KEY_MOUSE(size_t* args);
+int connect_server(char* ip, long port, int* client_socket);
+void client_quit(const int* client_socket);

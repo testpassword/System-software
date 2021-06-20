@@ -2,10 +2,11 @@
 #include "../../include/controllers/client.h"
 #include <curses.h>
 #include <string.h>
-#include "../../include/views/client_ui.h"
 #include "../../include/str_extensions.h"
+#include "../../include/dtos/Frame.h"
 
 int client_socket;
+const char* client_success = "Done!";
 
 void *eventUpdate(void *args) {
     struct pthread_args_event *arg = args;
@@ -13,7 +14,7 @@ void *eventUpdate(void *args) {
     bool *running = arg->running;
     bool *needUpdate = arg->needUpdate;
     size_t *argsA = arg->args;
-    while(*running) {
+    while (*running) {
         *running = key_handle(*ch = getch(), argsA);
         *needUpdate = true;
     }
@@ -22,7 +23,7 @@ void *eventUpdate(void *args) {
 
 int ui_work(struct Book **books, int *count_book, bool *work, bool *needUpdate) {
     struct InputArea console;
-    if (initUI(&console)) return ERR_CLIENT_TERMINAL_ERRPR;
+    if (init(&console)) return ERR_CLIENT_TERMINAL_ERROR;
     int selectedBook = 0;
     int selectedPage = 0;
     int ch = 0;
@@ -51,11 +52,11 @@ int ui_work(struct Book **books, int *count_book, bool *work, bool *needUpdate) 
     };
     pthread_create(&threadUpdateEvent, NULL, eventUpdate, &ev);
     do {
-        if (*needUpdate)  { update(args); *needUpdate = false; }
+        if (*needUpdate)  { redraw(args); *needUpdate = false; }
         usleep(1);
     } while (running && *work);
     free(args);
-    closeUI(&console);
+    destroy(&console);
     return SUCCESS;
 }
 
@@ -183,8 +184,7 @@ bool handle_UP(size_t *args) {
                 (*selectedBook) = 0;
             } else (*selectedBook) = lenghtArea - 1;
         }
-        int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
-        if (selectBook <= 0) (*selectedBook) = 0;
+        if ((*selectedPage) * lenghtArea + (*selectedBook) <= 0) (*selectedBook) = 0;
     }
     return true;
 }
@@ -411,7 +411,7 @@ bool handle_F5(size_t *args) {
         int *client_socket = (int *) args[9];
         update_book(client_socket, cur_book);
     }
-    clearAllWindow(args);
+    clear_window(args);
     return true;
 }
 
@@ -473,26 +473,26 @@ Command knownCommands[] = {
 bool key_handle(int ch, size_t *args) { return event(ch, args, knownCommands, CI_SIZE(knownCommands)); }
 
 int open_socket(int *client_socket) {
-    printf("Open socket.....................................");
+    println("Setting connection...");
     *client_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (*client_socket < 0) {
-        printf("faild\n");
-        perror("Error: 'socket()'");
+        println("Problems with creating connection");
         return ERR_CLIENT_OPEN_SOCKET;
+    } else {
+        println(client_success);
+        return SUCCESS;
     }
-    printf("done\n");
-    return SUCCESS;
 }
 
 int connect_to_server(const int *client_socket, struct sockaddr_in *server_address) {
-    printf("Connection to serve............................");
+    println("Connecting to server...");
     if (connect(*client_socket, (struct sockaddr *) server_address, sizeof(struct sockaddr_in)) == -1) {
-        printf("faild\n");
-        perror("Error: 'connect()'");
+        println("Problems with connecting to server, try later");
         return ERR_CLIENT_CONNECT;
+    } else {
+        println(client_success);
+        return SUCCESS;
     }
-    printf("done\n");
-    return SUCCESS;
 }
 
 int check_connect(const int *client_socket) {
@@ -501,8 +501,7 @@ int check_connect(const int *client_socket) {
     if (!((config_frame.function == SERVER_FULL) && (config_frame.function_parameter == 0))) {
         close(*client_socket);
         return ERR_CLIENT_CONNECT_SERVER;
-    }
-    return SUCCESS;
+    } else return SUCCESS;
 }
 
 int connect_server(char *ip, long port, int *client_socket) {
@@ -523,38 +522,8 @@ int connect_server(char *ip, long port, int *client_socket) {
 void client_quit(const int *client_socket) {
     struct Frame configFrame = {.function = CLIENT_QUIT, .function_parameter = 0};
     pack_frame(*client_socket, &configFrame);
-    printf("Close socket....................................");
+    println("Disconnecting from server...");
     shutdown(*client_socket, SHUT_RDWR);
     close(*client_socket);
-    printf("done\n");
-}
-
-void get_books_net(const int *client_socket, struct Book ***books, int *lenght) {
-    struct Frame configFrame = {.function = GET_ALL_BOOK, .function_parameter = 0};
-    int old_lenght = *lenght;
-    (*lenght) = 0;
-    pack_frame(*client_socket, &configFrame);
-    struct BookFrame bf;
-    while (true) {
-        unpack_book(*client_socket, &bf);
-        if (bf.function == SEND_BOOK_EOF) {
-            (*books)[(*lenght)] = NULL;
-            break;
-        } else {
-            if ((*books)[(*lenght)] == NULL) {
-                (*books)[(*lenght)] = calloc(1, sizeof(struct Book));
-            }
-            memcpy((*books)[(*lenght)], &(bf.book), sizeof(struct Book));
-            (*lenght)++;
-            if (old_lenght <= *lenght)
-                (*books) = realloc((*books), ((*lenght) + 1) * sizeof(struct Book *));
-        }
-    }
-}
-
-void update_book(const int *client_socket, struct Book *book) {
-    struct Frame configFrame = {.function = CLIENT_UPDATE_BOOK, .function_parameter = 0};
-    struct BookFrame bookFrame = {.function = CLIENT_UPDATE_BOOK, .book = *book};
-    pack_frame(*client_socket, &configFrame);
-    pack_book(*client_socket, &bookFrame);
+    println(client_success);
 }

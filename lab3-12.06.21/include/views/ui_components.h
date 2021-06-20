@@ -59,9 +59,9 @@ struct InputArea {
     struct Bar forms;
 };
 
-int initUI(struct InputArea *cons);
-void closeUI(struct InputArea *cons);
-void update(size_t *args);
-void clearAllWindow(size_t *args);
+int init(struct InputArea *cons);
+void destroy(struct InputArea *cons);
+void redraw(size_t *args);
+void clear_window(size_t *args);
 
 #endif

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include "../../include/models/Book.h"
+#include "../../include/controllers/client.h"
+#include "../../include/dtos/Frame.h"
 
 struct Book** generate_books(size_t lenght) {
     struct Book** books = calloc(lenght + 1, sizeof(struct Book*));
@@ -24,3 +26,29 @@ void burn_books(struct Book **books, const int count_book) {
 }
 
 struct Book** read_book() { return generate_books(15); }
+
+void get_books_net(const int *client_socket, struct Book ***books, int *lenght) {
+    int old_lenght = *lenght;
+    (*lenght) = 0;
+    pack_frame(*client_socket, &(struct Frame) {.function = GET_ALL_BOOK, .function_parameter = 0});
+    struct BookFrame bf;
+    while (true) {
+        unpack_book(*client_socket, &bf);
+        if (bf.function == SEND_BOOK_EOF) {
+            (*books)[(*lenght)] = NULL;
+            break;
+        } else {
+            if ((*books)[(*lenght)] == NULL)
+                (*books)[(*lenght)] = calloc(1, sizeof(struct Book));
+            memcpy((*books)[(*lenght)], &(bf.book), sizeof(struct Book));
+            (*lenght)++;
+            if (old_lenght <= *lenght)
+                (*books) = realloc((*books), ((*lenght) + 1) * sizeof(struct Book *));
+        }
+    }
+}
+
+void update_book(const int *client_socket, struct Book *book) {
+    pack_frame(*client_socket, &(struct Frame) {.function = CLIENT_UPDATE_BOOK, .function_parameter = 0});
+    pack_book(*client_socket, &(struct BookFrame) {.function = CLIENT_UPDATE_BOOK, .book = *book});
+}

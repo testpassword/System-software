@@ -21,5 +21,6 @@ struct Book** generate_books(size_t lenght);
 void burn_books(struct Book **books, const int count_book);
 struct Book** read_book();
 int count_books(struct Book **books);
-
+void get_books_net(const int* client_socket, struct Book *** books, int* lenght);
+void update_book(const int* client_socket, struct Book* book);
 #endif

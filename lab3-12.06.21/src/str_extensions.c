@@ -2,15 +2,25 @@
 #include <malloc.h>
 #include "../include/str_extensions.h"
 #include <stdarg.h>
+#include <stdbool.h>
 
-char* trim(char *str) {
+// https://cboard.cprogramming.com/c-programming/173158-java-style-println-c.html
+int println(const char* format, ...) {
+    va_list ap;
+    va_start(ap, format);
+    int ret = vprintf(format, ap);
+    va_end(ap);
+    puts("");
+    return ret;
+}
+
+char* trim(char* str) {
     const char* sep = "\t\n\v\f\r ";
     size_t i = strlen(str) - 1;
     while (i >= 0 && strchr(sep, str[i]) != NULL) {
         str[i] = '\0';
         i--;
     }
-    sep = "\t\n\v\f\r ";
     size_t totrim = strspn(str, sep);
     if (totrim > 0) {
         size_t len = strlen(str);
@@ -20,30 +30,19 @@ char* trim(char *str) {
     return str;
 }
 
-int includes(char *source, char *find) {
-    size_t N = strlen(source);
-    size_t M = strlen(find);
-    int isFound = 0;
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < M; j++)
-            if (source[i] == find[j]) {
-                isFound = 1;
+bool includes(char* source, char* substring) {
+    size_t src_len = strlen(source);
+    size_t sub_len = strlen(substring);
+    bool isContains = false;
+    for (int i = 0; i < src_len; i++)
+        for (int j = 0; j < sub_len; j++)
+            if (source[i] == substring[j]) {
+                isContains = true;
                 i++;
             } else {
-                isFound = 0;
+                isContains = false;
                 i += j - 1;
                 break;
             }
-        if (isFound) return isFound;
-    }
-    return -1;
-}
-
-int println(const char * format, ...) {
-    va_list ap;
-    va_start(ap, format);
-    int ret = vprintf(format, ap);
-    va_end(ap);
-    puts("");
-    return ret;
+    return isContains;
 }

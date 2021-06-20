@@ -5,10 +5,11 @@ set(SOURCE_FILE
         src/shell.c
         src/controllers/client.c
         src/models/Book.c
-        src/views/client_ui.c
+        src/views/ui_components.c
         src/str_extensions.c
         src/controllers/server.c
-        src/models/frames.c
+        src/dtos/BookFrame.c
+        src/dtos/Frame.c
         src/models/Command.c
         )
 add_executable(mortem ${SOURCE_FILE})

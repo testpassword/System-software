@@ -3,10 +3,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <memory.h>
+#include "../../include/dtos/Frame.h"
 
 struct ClientConnection client_socket[MAX_CLIENT_NUMBER];
 bool running_server = true;
-const char* success = "Успех!";
+const char* server_success = "Успех!";
 const char* exception = "Неожиданная ошибка сервера, попробуйте попытку позже";
 
 int open_connection(int* connect_socket) {
@@ -15,9 +16,10 @@ int open_connection(int* connect_socket) {
     if (connect_socket < 0) {
         println("Ошибка соединения");
         return ERR_SERVER_SOCKET_OPEN;
+    } else {
+        println(server_success);
+        return SUCCESS;
     }
-    println(success);
-    return SUCCESS;
 }
 
 int set_connection_name(const int* connect_socket, int* reuse) {
@@ -25,9 +27,10 @@ int set_connection_name(const int* connect_socket, int* reuse) {
     if (setsockopt(*connect_socket, SOL_SOCKET, SO_REUSEADDR, reuse, sizeof(int)) == -1) {
         println("Ошибка конфигурации соединения");
         return ERR_SERVER_SOCKET_SETNAME;
+    } else {
+        println(server_success);
+        return SUCCESS;
     }
-    println(success);
-    return SUCCESS;
 }
 
 int bind_connection_with_address(const int *connect_socket, struct sockaddr_in *server_address) {
@@ -35,9 +38,10 @@ int bind_connection_with_address(const int *connect_socket, struct sockaddr_in *
     if (bind(*connect_socket, (struct sockaddr *) server_address, sizeof(struct sockaddr_in)) == -1) {
         println("Ошибка канала");
         return ERR_SERVER_SOCKET_BIND;
+    } else {
+        println(server_success);
+        return SUCCESS;
     }
-    println(success);
-    return SUCCESS;
 }
 
 int listen_connection(const int* connect_socket, int max_client) {
@@ -45,9 +49,10 @@ int listen_connection(const int* connect_socket, int max_client) {
     if (listen(*connect_socket, max_client) == -1) {
         println("Ошибка прослушки: обратитесь к своему агенту ФСБ для дальнейший указаний");
         return ERR_SERVER_SOCKET_LISTEN;
+    } else {
+        println(server_success);
+        return SUCCESS;
     }
-    println(success);
-    return SUCCESS;
 }
 
 int init_connect(int *connect_socket, struct sockaddr_in *server_address, int *reuse, long port, int max_client) {
@@ -99,10 +104,9 @@ void *accept_pthread(void *args) {
 }
 
 void terminate_serve_process() {
-    struct Frame configFrame = {.function = SERVER_QUIT, .function_parameter = 0};
     for (size_t i = 0; i < MAX_CLIENT_NUMBER; i++)
         if (client_socket[i].client_socket > -1 && client_socket[i].active) {
-            pack_frame(client_socket[i].client_socket, &configFrame);
+            pack_frame(client_socket[i].client_socket, &(struct Frame) {.function = SERVER_QUIT, .function_parameter = 0});
             close(client_socket[i].client_socket);
         }
     running_server = false;
@@ -211,7 +215,7 @@ bool com_client_update_book(size_t *args) {
     size_t lenght_book = args[2];
     struct Book **books = (struct Book **) args[3];
     int *client_number = (int *) args[4];
-    printf("Client #%zu: update Book\n", i);
+    printf("Client #%zu: redraw Book\n", i);
     struct BookFrame bookFrameUpdate;
     unpack_book(client_sockets[i].client_socket, &bookFrameUpdate);
     for (int lbook = 0; lbook < lenght_book; lbook++)
