@@ -115,16 +115,15 @@ void filter_listener(size_t *args) {
     char *filter_req = trim(field_buffer(cons->forms.search.fields[0], 0));
     for (int i = 0; i < *count_books; i++) {
         struct Book* book = books[i];
-        int title_filter = checkbox[CHECKBOX_FILTER_BY_TITLE] ? includes(book->title, filter_req) : -1;
-        int tag_filter = checkbox[CHECKBOX_FILTER_BY_TAG] ? includes(book->tags, filter_req) : -1;
-        int author_filter = checkbox[CHECKBOX_FILTER_BY_AUTHOR] ? includes(book->authors, filter_req) : -1;
-        int annotation_filter = checkbox[CHECKBOX_FILTER_BY_ANNOTATION] ? includes(book->annotation, filter_req) : -1;
-        if (title_filter == -1 && tag_filter == -1 && author_filter == -1 && annotation_filter == -1) continue;
-        else {
-            if (i >= cons->textArea.mainWindow.bookWLines) *selected_page = i / cons->textArea.mainWindow.bookWLines;
-            *selected_book = i % cons->textArea.mainWindow.bookWLines;
+        int title_filter = checkbox[CHECKBOX_FILTER_BY_TITLE] ? includes(book->title, filter_req) : false;
+        int tag_filter = checkbox[CHECKBOX_FILTER_BY_TAG] ? includes(book->tags, filter_req) : false;
+        int author_filter = checkbox[CHECKBOX_FILTER_BY_AUTHOR] ? includes(book->authors, filter_req) : false;
+        int annotation_filter = checkbox[CHECKBOX_FILTER_BY_ANNOTATION] ? includes(book->annotation, filter_req) : false;
+        if (title_filter == true || tag_filter == true || author_filter == true || annotation_filter == true) {
+            if (i >= cons->text_area.books_list.book_lines) *selected_page = i / cons->text_area.books_list.book_lines;
+            *selected_book = i % cons->text_area.books_list.book_lines;
             break;
-        }
+        } else continue;
     }
 }
 
@@ -163,17 +162,11 @@ bool cmd_symbol(size_t *args) {
     return true;
 }
 
-bool handle_KEY_MOUSE(size_t *args) {
-    MEVENT event;
-    if (getmouse(&event) == OK) {}
-    return true;
-}
-
 bool handle_UP(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!(*open_edit_form)) {
         struct InputArea *cons = (struct InputArea *) args[0];
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
         (*selectedBook)--;
@@ -193,11 +186,11 @@ bool handle_DOWN(size_t *args) {
     bool *open_edit_form = (bool *) args[5];
     if (!(*open_edit_form)) {
         struct InputArea *cons = (struct InputArea *) args[0];
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
         int *lenght = (int *) args[4];
-        int pages = (*lenght) / cons->textArea.mainWindow.bookWLines + 1;
+        int pages = (*lenght) / cons->text_area.books_list.book_lines + 1;
         (*selectedBook)++;
         if ((*selectedBook) >= lenghtArea) {
             (*selectedPage)++;
@@ -224,7 +217,7 @@ bool handle_F1(size_t *args) {
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
         int *editField = (int *) args[8];
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
         struct Book *cur_book = books[selectBook];
         form_driver(cons->forms.edit.form, REQ_NEXT_FIELD);
@@ -250,7 +243,7 @@ bool handle_F1(size_t *args) {
         struct Book **books = (struct Book **) args[1];
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
         struct Book *cur_book = books[selectBook];
         if (cur_book->available > 0) cur_book->available--;
@@ -268,7 +261,7 @@ bool handle_F2(size_t *args) {
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
         int *editField = (int *) args[8];
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
         struct Book *cur_book = books[selectBook];
         form_driver(cons->forms.edit.form, REQ_NEXT_FIELD);
@@ -294,7 +287,7 @@ bool handle_F2(size_t *args) {
         struct Book **books = (struct Book **) args[1];
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
         struct Book *cur_book = books[selectBook];
         if (cur_book->available < cur_book->max) cur_book->available++;
@@ -312,7 +305,7 @@ bool handle_F3(size_t *args) {
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
         int *editField = (int *) args[8];
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
         struct Book *cur_book = books[selectBook];
         form_driver(cons->forms.edit.form, REQ_NEXT_FIELD);
@@ -345,7 +338,7 @@ bool handle_F4(size_t *args) {
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
         int *editField = (int *) args[8];
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
         struct Book *cur_book = books[selectBook];
         form_driver(cons->forms.edit.form, REQ_NEXT_FIELD);
@@ -380,7 +373,7 @@ bool handle_F5(size_t *args) {
         set_current_field(cons->forms.edit.form, cons->forms.edit.fields[0]);
     } else {
         struct Book **books = (struct Book **) args[1];
-        int lenghtArea = cons->textArea.mainWindow.bookWLines;
+        int lenghtArea = cons->text_area.books_list.book_lines;
         int *selectedPage = ((int *) args[2]);
         int *selectedBook = ((int *) args[3]);
         int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
@@ -466,8 +459,7 @@ Command knownCommands[] = {
         {KEY_F(7), &handle_F7},
         {KEY_F(8), &handle_F8},
         {KEY_F(9), &handle_F9},
-        {KEY_F(10), &handle_F10},
-        {KEY_MOUSE, &handle_KEY_MOUSE},
+        {KEY_F(10), &handle_F10}
 };
 
 bool key_handle(int ch, size_t *args) { return event(ch, args, knownCommands, CI_SIZE(knownCommands)); }
@@ -498,7 +490,7 @@ int connect_to_server(const int *client_socket, struct sockaddr_in *server_addre
 int check_connect(const int *client_socket) {
     struct Frame config_frame;
     unpack_frame(*client_socket, &config_frame);
-    if (!((config_frame.function == SERVER_FULL) && (config_frame.function_parameter == 0))) {
+    if (!((config_frame.function == ACCEPT_CONNECTION) && (config_frame.function_parameter == 0))) {
         close(*client_socket);
         return ERR_CLIENT_CONNECT_SERVER;
     } else return SUCCESS;

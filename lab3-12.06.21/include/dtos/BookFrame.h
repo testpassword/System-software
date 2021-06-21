@@ -3,7 +3,7 @@
 #define SPO_LAB3_FRAME_H
 #define MAX_CLIENT_NUMBER 8
 #ifndef __USE_PROTOCOL
-#define SERVER_FULL 1
+#define ACCEPT_CONNECTION 1
 #define GET_ALL_BOOK 2
 #define SEND_BOOK_EOF 3
 #define SEND_BOOK 4

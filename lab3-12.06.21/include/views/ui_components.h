@@ -16,30 +16,30 @@
 #define EDIT_BOX_NONE -1
 
 struct Border {
-    WINDOW *borderBookListW;
-    WINDOW *borderBookInfoW;
+    WINDOW *border_book_list;
+    WINDOW *border_book_info;
 };
 
 struct Editor {
-    WINDOW *topButtonW;
-    WINDOW *bookListW;
-    WINDOW *bookInfoW;
-    WINDOW *bottomButtonW;
+    WINDOW *top_btn;
+    WINDOW *book_list;
+    WINDOW *book_info;
+    WINDOW *bottom_btn;
 };
 
 struct BookList {
-    WINDOW *searchW;
-    WINDOW *topButtonW;
-    WINDOW *bookListW;
-    WINDOW *bookInfoW;
-    WINDOW *bottomButtonW;
-    int bookWLines;
-    int bookNameLenght;
+    WINDOW *search;
+    WINDOW *top_btn;
+    WINDOW *book_list;
+    WINDOW *book_info;
+    WINDOW *bottom_btn;
+    int book_lines;
+    int book_title_lenght;
 };
 
 struct TextArea {
-    struct BookList mainWindow;
-    struct Editor editWindow;
+    struct BookList books_list;
+    struct Editor editor;
 };
 
 struct Form {
@@ -55,7 +55,7 @@ struct Bar {
 
 struct InputArea {
     struct Border border;
-    struct TextArea textArea;
+    struct TextArea text_area;
     struct Bar forms;
 };
 

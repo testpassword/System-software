@@ -9,14 +9,14 @@ struct Book** generate_books(size_t count) {
     names[0] = "Klimenkov"; names[1] = "Zopa"; names[2] = "Nikolaev";
     names[3] = "Afanasiev"; names[4] = "Pismak"; names[5] = "Gavrilov";
     const char* titles[9];
-    titles[0] = "software testing"; titles[1] = "software engineering"; titles[2] = "web-programming";
-    titles[3] = "programming"; titles[4] = "mobile application development"; titles[5] = "operating systems";
-    titles[6] = "information systems and databases"; titles[7] = "computational math"; titles[8] = "algorithms and data structures";
+    titles[0] = "testing"; titles[1] = "engineering"; titles[2] = "web";
+    titles[3] = "programming"; titles[4] = "mobile appdev"; titles[5] = "os";
+    titles[6] = "db"; titles[7] = "math"; titles[8] = "algs";
     const char* tags[5];
     tags[0] = "fiction"; tags[1] = "monitor"; tags[2] = "amazing";
     tags[3] = "payback"; tags[4] = "water";
     const char* annotations[2];
-    annotations[0] = "i am to lazy to write annotations"; annotations[1] = "now very hot on outside";
+    annotations[0] = "i am to lazy to write annotations"; annotations[1] = "now very hot outside";
     struct Book** books = calloc(count + 1, sizeof(struct Book*));
     for (size_t i = 0; i < count; i++) {
         books[i] = calloc(1, sizeof(struct Book));

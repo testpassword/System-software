@@ -85,21 +85,12 @@ void *accept_pthread(void *args) {
             println(exception);
             exit(ERR_SERVER_ACCEPT);
         }
-        if (*client_number < MAX_CLIENT_NUMBER) {
-            println("Клиент %d/%d подключился", *client_number + 1, MAX_CLIENT_NUMBER);
-            config_frame.function = SERVER_FULL;
-            config_frame.function_parameter = 0;
-            pack_frame(client_socket[*client_number].client_socket, &config_frame);
-            client_socket[*client_number].active = true;
-            (*client_number)++;
-        } else if (*client_number == MAX_CLIENT_NUMBER) println("Сервер загружен по максимуму, повторите попытку позже");
-        else {
-            config_frame.function = SERVER_FULL;
-            println(exception);
-            pack_frame(client_socket[*client_number].client_socket, &config_frame);
-            close(client_socket[*client_number].client_socket);
-            client_socket[*client_number].active = false;
-        }
+        println("Клиент %d подключился", *client_number + 1);
+        config_frame.function = ACCEPT_CONNECTION;
+        config_frame.function_parameter = 0;
+        pack_frame(client_socket[*client_number].client_socket, &config_frame);
+        client_socket[*client_number].active = true;
+        (*client_number)++;
     }
     return NULL;
 }
@@ -180,7 +171,7 @@ bool com_get_all_book(size_t *args) {
     struct ClientConnection *client_sockets = (struct ClientConnection *) args[1];
     size_t lenght_book = args[2];
     struct Book **books = (struct Book **) args[3];
-    println(action_template, i, "get_all_book");
+    println(action_template, i + 1, "get_all_book");
     struct BookFrame bookFrame;
     for (int lbook = 0; lbook < lenght_book; lbook++) {
         if (books[lbook]) {

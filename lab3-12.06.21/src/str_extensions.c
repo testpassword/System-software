@@ -31,18 +31,6 @@ char* trim(char* str) {
 }
 
 bool includes(char* source, char* substring) {
-    size_t src_len = strlen(source);
-    size_t sub_len = strlen(substring);
-    bool isContains = false;
-    for (int i = 0; i < src_len; i++)
-        for (int j = 0; j < sub_len; j++)
-            if (source[i] == substring[j]) {
-                isContains = true;
-                i++;
-            } else {
-                isContains = false;
-                i += j - 1;
-                break;
-            }
-    return isContains;
+    if (strlen(substring) < 1 || strlen(source) < 1) return -1;
+    return strstr(source, substring) != NULL ? 0 : -1;
 }

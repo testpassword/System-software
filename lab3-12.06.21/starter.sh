@@ -1,6 +1,8 @@
 case ${1} in
+  "--dep")
+    echo toor | sudo -S apt-get install libncurses5-dev
+    ;;
   "--build")
-    sudo apt-get install libncurses5-dev
     cmake CMakeLists.txt
     cmake --build .
     chmod +x mortem
