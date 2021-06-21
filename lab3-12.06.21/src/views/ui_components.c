@@ -3,18 +3,19 @@
 
 int init_curses() {
     if (!initscr()) {
-        fprintf(stderr, "Error initialising ncurses.\n");
+        println(stderr, "error init library ncurses which responsible for ui drawing");
         return 1;
+    } else {
+        noecho();
+        cbreak();
+        keypad(stdscr, TRUE);
+        return 0;
     }
-    noecho();
-    cbreak();
-    keypad(stdscr, TRUE);
-    return 0;
 }
 
 void draw_borders(struct InputArea *cons) {
-    wborder(cons->border.borderBookListW, '|', '|', '-', '-', '+', '+', '+', '+');
-    wborder(cons->border.borderBookInfoW, '|', '|', '-', '-', '+', '+', '+', '+');
+    wborder(cons->border.borderBookListW, '|', '|', '-', '-', ' ', '*', ' ', '*');
+    wborder(cons->border.borderBookInfoW, '|', '|', '-', '-', '*', ' ', '*', ' ');
 }
 
 void draw_search(struct InputArea *cons, int colsBookList) {
@@ -160,88 +161,79 @@ void draw_book_list(struct InputArea *cons, struct Book **books, int lenght, int
 void draw_book_info(struct InputArea *cons, struct Book *book) {
     wclear(cons->textArea.mainWindow.bookInfoW);
     wprintw(cons->textArea.mainWindow.bookInfoW, "Title: %s\n", book->title);
-    wprintw(cons->textArea.mainWindow.bookInfoW, "Authors: %s\n", book->authors);
+    wprintw(cons->textArea.mainWindow.bookInfoW, "Author: %s\n", book->authors);
     wprintw(cons->textArea.mainWindow.bookInfoW, "Annotation: %s\n", book->annotation);
-    wprintw(cons->textArea.mainWindow.bookInfoW, "Tags: %s\n", book->tags);
+    wprintw(cons->textArea.mainWindow.bookInfoW, "Tag: %s\n", book->tags);
     wprintw(cons->textArea.mainWindow.bookInfoW, "Available: %d\n", book->available);
 }
 
 void draw_upper_key_tips(struct InputArea *cons, const bool *open_edit_form) {
     wclear(cons->textArea.mainWindow.topButtonW);
     if(!(*open_edit_form)) {
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Get Book ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F1");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Return Book ");
+        wprintw(cons->textArea.mainWindow.topButtonW, " get | ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F2");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-        wprintw(cons->textArea.mainWindow.topButtonW, "[To Edit Book ");
+        wprintw(cons->textArea.mainWindow.topButtonW, " return | ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F5");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
+        wprintw(cons->textArea.mainWindow.topButtonW, " edit | ");
     } else {
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Title ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F1");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Authors ");
+        wprintw(cons->textArea.mainWindow.topButtonW, " Title | ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F2");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Annotation ");
+        wprintw(cons->textArea.mainWindow.topButtonW, " Author | ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F3");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Tags ");
+        wprintw(cons->textArea.mainWindow.topButtonW, " Annotation | ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F4");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
-        wprintw(cons->textArea.mainWindow.topButtonW, "[Return ");
+        wprintw(cons->textArea.mainWindow.topButtonW, " Tag | ");
         wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.topButtonW, "F5");
         wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.topButtonW, "] ");
+        wprintw(cons->textArea.mainWindow.topButtonW, " save | ");
     }
-    wprintw(cons->textArea.mainWindow.topButtonW, "[Exit ");
     wattron(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
     wprintw(cons->textArea.mainWindow.topButtonW, "F10");
     wattroff(cons->textArea.mainWindow.topButtonW, A_UNDERLINE);
-    wprintw(cons->textArea.mainWindow.topButtonW, "]");
+    wprintw(cons->textArea.mainWindow.topButtonW, " exit ");
 }
 
 void draw_bottom_key_tips(struct InputArea *cons, const bool *checkboxFilter, const bool *open_edit_form, const int *editField) {
     wclear(cons->textArea.mainWindow.bottomButtonW);
     if(!(*open_edit_form)) {
-        wprintw(cons->textArea.mainWindow.bottomButtonW, "Filter by ");
-        wprintw(cons->textArea.mainWindow.bottomButtonW, "%s Title (", checkboxFilter[CHECKBOX_FILTER_BY_TITLE] ? "[X]" : "[ ]");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, "filter by: ");
         wattron(cons->textArea.mainWindow.bottomButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.bottomButtonW, "F6");
         wattroff(cons->textArea.mainWindow.bottomButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.bottomButtonW, "), ");
-        wprintw(cons->textArea.mainWindow.bottomButtonW, "%s Author (", checkboxFilter[CHECKBOX_FILTER_BY_AUTHOR] ? "[X]" : "[ ]");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, " Title%s", checkboxFilter[CHECKBOX_FILTER_BY_TITLE] ? "[X]" : "[ ]");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, " | ");
         wattron(cons->textArea.mainWindow.bottomButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.bottomButtonW, "F7");
         wattroff(cons->textArea.mainWindow.bottomButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.bottomButtonW, "), ");
-        wprintw(cons->textArea.mainWindow.bottomButtonW, "%s Annotation (", checkboxFilter[CHECKBOX_FILTER_BY_ANNOTATION] ? "[X]" : "[ ]");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, " Author%s", checkboxFilter[CHECKBOX_FILTER_BY_AUTHOR] ? "[X]" : "[ ]");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, " | ");
         wattron(cons->textArea.mainWindow.bottomButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.bottomButtonW, "F8");
         wattroff(cons->textArea.mainWindow.bottomButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.bottomButtonW, "), ");
-        wprintw(cons->textArea.mainWindow.bottomButtonW, "%s Tag (", checkboxFilter[CHECKBOX_FILTER_BY_TAG] ? "[X]" : "[ ]");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, " Annotation%s", checkboxFilter[CHECKBOX_FILTER_BY_ANNOTATION] ? "[X]" : "[ ]");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, " | ");
         wattron(cons->textArea.mainWindow.bottomButtonW, A_UNDERLINE);
         wprintw(cons->textArea.mainWindow.bottomButtonW, "F9");
         wattroff(cons->textArea.mainWindow.bottomButtonW, A_UNDERLINE);
-        wprintw(cons->textArea.mainWindow.bottomButtonW, ") ");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, " Tag%s", checkboxFilter[CHECKBOX_FILTER_BY_TAG] ? "[X]" : "[ ]");
+        wprintw(cons->textArea.mainWindow.bottomButtonW, " ");
     } else {
         wprintw(cons->textArea.mainWindow.bottomButtonW, "Edit Book ");
         switch (*editField) {

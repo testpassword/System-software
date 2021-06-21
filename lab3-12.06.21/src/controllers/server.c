@@ -9,6 +9,7 @@ struct ClientConnection client_socket[MAX_CLIENT_NUMBER];
 bool running_server = true;
 const char* server_success = "Успех!";
 const char* exception = "Неожиданная ошибка сервера, попробуйте попытку позже";
+const char* action_template = "клиент №%zu :: действие - %s";
 
 int open_connection(int* connect_socket) {
     println("Соединяюсь...");
@@ -155,7 +156,7 @@ int serve(long port) {
     struct sockaddr_in remote_address;
     socklen_t socket_len = sizeof(remote_address);
     int client_number = 0;
-    struct Book **books = read_book();
+    struct Book **books = read_books();
     int lenght_book = count_books(books);
     pthread_t threadAccept;
     struct pthread_args args = {connect_socket, &remote_address, &socket_len, &client_number};
@@ -179,7 +180,7 @@ bool com_get_all_book(size_t *args) {
     struct ClientConnection *client_sockets = (struct ClientConnection *) args[1];
     size_t lenght_book = args[2];
     struct Book **books = (struct Book **) args[3];
-    printf("Client #%zu: Get All\n", i);
+    println(action_template, i, "get_all_book");
     struct BookFrame bookFrame;
     for (int lbook = 0; lbook < lenght_book; lbook++) {
         if (books[lbook]) {
@@ -197,7 +198,7 @@ bool com_get_all_book(size_t *args) {
 bool com_client_quit(size_t *args) {
     size_t i = args[0];
     struct ClientConnection *client_sockets = (struct ClientConnection *) args[1];
-    printf("Client #%zu: Quit\n", i);
+    println(action_template, i, "disconnect");
     close(client_sockets[i].client_socket);
     client_sockets[i].active = false;
     return true;
@@ -215,7 +216,7 @@ bool com_client_update_book(size_t *args) {
     size_t lenght_book = args[2];
     struct Book **books = (struct Book **) args[3];
     int *client_number = (int *) args[4];
-    printf("Client #%zu: redraw Book\n", i);
+    println(action_template, i, "update_book");
     struct BookFrame bookFrameUpdate;
     unpack_book(client_sockets[i].client_socket, &bookFrameUpdate);
     for (int lbook = 0; lbook < lenght_book; lbook++)

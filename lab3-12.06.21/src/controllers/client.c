@@ -8,7 +8,7 @@
 int client_socket;
 const char* client_success = "Done!";
 
-void *eventUpdate(void *args) {
+void *update_after_handle(void *args) {
     struct pthread_args_event *arg = args;
     int *ch = arg->ch;
     bool *running = arg->running;
@@ -21,7 +21,7 @@ void *eventUpdate(void *args) {
     return NULL;
 }
 
-int ui_work(struct Book **books, int *count_book, bool *work, bool *needUpdate) {
+int ui_listener(struct Book **books, int *count_book, bool *work, bool *needUpdate) {
     struct InputArea console;
     if (init(&console)) return ERR_CLIENT_TERMINAL_ERROR;
     int selectedBook = 0;
@@ -50,7 +50,7 @@ int ui_work(struct Book **books, int *count_book, bool *work, bool *needUpdate) 
             .args = args,
             .needUpdate = needUpdate
     };
-    pthread_create(&threadUpdateEvent, NULL, eventUpdate, &ev);
+    pthread_create(&threadUpdateEvent, NULL, update_after_handle, &ev);
     do {
         if (*needUpdate)  { redraw(args); *needUpdate = false; }
         usleep(1);
@@ -65,7 +65,7 @@ void interrupt_close_client() {
     exit(SIGINT);
 }
 
-void *threadUpdateBook(void *args) {
+void *update_book_thread_wrapper(void *args) {
     struct pthread_args_client *arg = args;
     struct Frame configFrame;
     while(*(arg->connect)) {
@@ -95,34 +95,34 @@ int client(char *ip, long port) {
             .connect = &work,
             .needUpdate = &needUpdate
     };
-    pthread_create(&threadUpdate, NULL, threadUpdateBook, &args);
-    errno = ui_work(books, &length, &work, &needUpdate);
+    pthread_create(&threadUpdate, NULL, update_book_thread_wrapper, &args);
+    errno = ui_listener(books, &length, &work, &needUpdate);
     if(errno != SUCCESS) return errno;
     client_quit(&client_socket);
     burn_books(books, length);
     return SUCCESS;
 }
 
-void searchText(size_t *args) {
+void filter_listener(size_t *args) {
     struct InputArea *cons = (struct InputArea *) args[0];
     struct Book **books = (struct Book **) args[1];
-    int *selectedPage = ((int *) args[2]);
-    int *selectedBook = ((int *) args[3]);
-    int *lenghBook = (int *) args[4];
+    int *selected_page = ((int *) args[2]);
+    int *selected_book = ((int *) args[3]);
+    int *count_books = (int *) args[4];
     bool *checkbox = (bool *) args[6];
     form_driver(cons->forms.search.form, REQ_PREV_FIELD);
     form_driver(cons->forms.search.form, REQ_NEXT_FIELD);
-    char *field_buffer_value = trim(field_buffer(cons->forms.search.fields[0], 0));
-    for (int i = 0; i < *lenghBook; i++) {
-        struct Book *book = books[i];
-        int t1 = checkbox[CHECKBOX_FILTER_BY_TITLE] ? includes(book->title, field_buffer_value) : -1;
-        int t2 = checkbox[CHECKBOX_FILTER_BY_TAG] ? includes(book->tags, field_buffer_value) : -1;
-        int a1 = checkbox[CHECKBOX_FILTER_BY_AUTHOR] ? includes(book->authors, field_buffer_value) : -1;
-        int a2 = checkbox[CHECKBOX_FILTER_BY_ANNOTATION] ? includes(book->annotation, field_buffer_value) : -1;
-        if (t1 == -1 && t2 == -1 && a1 == -1 && a2 == -1) continue;
+    char *filter_req = trim(field_buffer(cons->forms.search.fields[0], 0));
+    for (int i = 0; i < *count_books; i++) {
+        struct Book* book = books[i];
+        int title_filter = checkbox[CHECKBOX_FILTER_BY_TITLE] ? includes(book->title, filter_req) : -1;
+        int tag_filter = checkbox[CHECKBOX_FILTER_BY_TAG] ? includes(book->tags, filter_req) : -1;
+        int author_filter = checkbox[CHECKBOX_FILTER_BY_AUTHOR] ? includes(book->authors, filter_req) : -1;
+        int annotation_filter = checkbox[CHECKBOX_FILTER_BY_ANNOTATION] ? includes(book->annotation, filter_req) : -1;
+        if (title_filter == -1 && tag_filter == -1 && author_filter == -1 && annotation_filter == -1) continue;
         else {
-            if (i >= cons->textArea.mainWindow.bookWLines) *selectedPage = i / cons->textArea.mainWindow.bookWLines;
-            *selectedBook = i % cons->textArea.mainWindow.bookWLines;
+            if (i >= cons->textArea.mainWindow.bookWLines) *selected_page = i / cons->textArea.mainWindow.bookWLines;
+            *selected_book = i % cons->textArea.mainWindow.bookWLines;
             break;
         }
     }
@@ -151,7 +151,7 @@ bool cmd_symbol(size_t *args) {
         case KEY_NL:
         case KEY_ENTER:
             if (!(*open_edit_from)) {
-                searchText(args);
+                filter_listener(args);
                 *(bool *)(args[10]) = true;
             }
             break;
@@ -297,7 +297,7 @@ bool handle_F2(size_t *args) {
         int lenghtArea = cons->textArea.mainWindow.bookWLines;
         int selectBook = (*selectedPage) * lenghtArea + (*selectedBook);
         struct Book *cur_book = books[selectBook];
-        if(cur_book->available < 10) cur_book->available++;
+        if (cur_book->available < cur_book->max) cur_book->available++;
         int *client_socket = (int *) args[9];
         update_book(client_socket, cur_book);
     }

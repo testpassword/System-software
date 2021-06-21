@@ -14,12 +14,13 @@ struct Book {
     char authors[MAX_BOOK_AUTHORS_AMOUNT * MAX_BOOK_AUTHOR_NAME_LENGTH];
     char annotation[MAX_BOOK_ANNOTATION_LENGTH];
     char tags[MAX_BOOK_TAGS_AMOUNT * MAX_BOOK_TAG_LENGTH];
-    char available;
+    int available;
+    int max;
 };
 
-struct Book** generate_books(size_t lenght);
-void burn_books(struct Book **books, const int count_book);
-struct Book** read_book();
+struct Book** generate_books(size_t count);
+void burn_books(struct Book **books, const int count);
+struct Book** read_books();
 int count_books(struct Book **books);
 void get_books_net(const int* client_socket, struct Book *** books, int* lenght);
 void update_book(const int* client_socket, struct Book* book);
